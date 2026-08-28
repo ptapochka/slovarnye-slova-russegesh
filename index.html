@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#8D80B0">
+<title>Тренажёры ЕГЭ — Алёнчик про русский ЕГЭ</title>
+<style>
+:root{
+  --rose:#FBD8E0; --mist:#DDE9EF; --lav:#8D80B0; --blue:#8397C4;
+  --ink:#4b4a60; --white:#fffdfd; --green:#5c8f78; --red:#c96f7e;
+}
+*{box-sizing:border-box}
+body{
+ margin:0; min-height:100vh; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+ color:var(--ink); background:linear-gradient(135deg,var(--mist),#f9f4f8 48%,var(--rose));
+}
+button,input,select{font:inherit}
+.app{max-width:1000px;margin:0 auto;padding:28px 18px 34px}
+header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}
+.brand h1{margin:0;font-size:clamp(24px,4vw,38px);letter-spacing:-.03em}
+.brand p{margin:7px 0 0;color:#77758b}
+.tg{display:inline-flex;text-decoration:none;align-items:center;gap:7px;background:#fff8fb;border:1px solid #eadde5;border-radius:999px;padding:9px 13px;color:var(--lav);font-weight:700;white-space:nowrap}
+
+/* Navigation Tabs */
+.nav-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: rgba(255,255,255,0.6);
+  padding: 6px;
+  border-radius: 16px;
+  overflow-x: auto;
+}
+.nav-tab {
+  background: transparent;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  color: #77758b;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.nav-tab.active {
+  background: #fff;
+  color: var(--lav);
+  box-shadow: 0 4px 12px rgba(80,70,100,0.1);
+}
+.nav-tab:hover:not(.active) {
+  background: rgba(255,255,255,0.8);
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.76);border:1px solid rgba(141,128,176,.16);border-radius:18px;padding:13px 15px}
+.stat b{display:block;font-size:23px;color:var(--lav)}
+.stat span{font-size:13px;color:#77758b}
+.progress{height:10px;background:rgba(255,255,255,.7);border-radius:99px;overflow:hidden;margin-bottom:20px}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lav),var(--blue));border-radius:99px;transition:width .3s}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+.order{display:flex;background:rgba(255,255,255,.72);padding:4px;border-radius:14px}
+.order button,.ghost,.primary,.danger{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;transition:.15s}
+.order button{background:transparent;color:#67657a}
+.order button.active{background:#fff;color:var(--lav);box-shadow:0 2px 10px rgba(80,70,100,.1);font-weight:700}
+.ghost{background:rgba(255,255,255,.8);color:var(--lav);border:1px solid #e5dfe9}
+.primary{background:var(--lav);color:white;font-weight:700}
+.danger{background:#fff0f3;color:var(--red)}
+button:hover:not(:disabled){transform:translateY(-1px)}
+
+.card{background:rgba(255,253,253,.93);border-radius:28px;padding:clamp(24px,5vw,48px);box-shadow:0 18px 55px rgba(80,70,100,.13);min-height:410px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;}
+.badge{color:var(--blue);font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+
+/* Styles for Vocab Trainer */
+.words{font-size:clamp(25px,4.6vw,42px);font-weight:700;line-height:1.75;max-width:900px}
+.blank{display:inline-flex;vertical-align:baseline;width:1.05em;margin:0 .035em;position:relative}
+.blank input{width:1.05em;height:1.25em;border:0;border-bottom:3px solid var(--blue);background:var(--mist);border-radius:7px 7px 2px 2px;text-align:center;font-weight:800;font-size:.9em;color:var(--ink);outline:none;padding:0}
+.blank input:focus{border-bottom-color:var(--lav);box-shadow:0 0 0 3px rgba(141,128,176,.15)}
+.blank input.correct{background:#e8f4ee;border-bottom-color:var(--green);color:var(--green)}
+.blank input.wrong{background:#fff0f3;border-bottom-color:var(--red);color:var(--red)}
+.answer-reveal{min-height:26px;color:#77758b;font-size:15px;margin-top:5px;}
+.other-vowel{font-weight:700;}
+
+/* Styles for Stress Trainer */
+.stress-word {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  font-size: clamp(30px, 5vw, 45px);
+  font-weight: 700;
+}
+.stress-word .vowel-btn {
+  background: var(--mist);
+  border: 3px solid transparent;
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 2px 5px;
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: 700;
+  transition: 0.15s;
+  outline: none;
+  line-height: 1;
+}
+.stress-word .vowel-btn:hover:not(:disabled) {
+  background: #c3d6e3;
+  border-color: var(--blue);
+}
+.stress-word .vowel-btn.correct {
+  background: #e8f4ee;
+  border-color: var(--green);
+  color: var(--green);
+}
+.stress-word .vowel-btn.wrong {
+  background: #fff0f3;
+  border-color: var(--red);
+  color: var(--red);
+}
+.stress-word .vowel-btn:disabled {
+  cursor: default;
+}
+.stress-word .context {
+  color: #8b8998;
+  font-weight: 500;
+  margin-left: 12px;
+  font-size: 0.7em;
+}
+
+/* Styles for Adverbs Trainer */
+.task-word {
+  font-size: clamp(25px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.4;
+  max-width: 900px;
+  margin-bottom: 12px;
+}
+.task-word .brackets {
+  color: var(--blue);
+  background: rgba(131, 151, 196, 0.15);
+  padding: 0 4px;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+.task-word.revealed .brackets {
+  background: transparent;
+  color: var(--ink);
+  padding: 0;
+}
+.context-hint {
+  font-size: clamp(16px, 2.5vw, 22px);
+  color: #77758b;
+  font-weight: 500;
+  margin-top: 8px;
+}
+.options {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.option-btn {
+  background: var(--mist);
+  border: 2px solid transparent;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 18px;
+  padding: 12px 24px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  min-width: 140px;
+}
+.option-btn:hover:not(:disabled) {
+  background: #c3d6e3;
+  border-color: var(--blue);
+}
+.option-btn.correct {
+  background: #e8f4ee;
+  border-color: var(--green);
+  color: var(--green);
+}
+.option-btn.wrong {
+  background: #fff0f3;
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.feedback{min-height:29px;margin-top:18px;font-weight:700}
+.feedback.ok{color:var(--green)} .feedback.bad{color:var(--red)}
+.actions{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap;min-height: 44px;}
+.help{margin-top:14px;color:#8b8998;font-size:13px}
+.footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:16px;color:#77758b;font-size:13px}
+.linkbtn{border:0;background:none;color:var(--lav);font-weight:700;cursor:pointer;padding:5px}
+.overlay{position:fixed;inset:0;background:rgba(47,42,58,.38);display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.overlay.show{display:flex}
+.modal{width:min(920px,100%);max-height:88vh;background:#fffdfd;border-radius:24px;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(30,25,40,.3);overflow:hidden}
+.modal-head{padding:18px;display:grid;grid-template-columns:1fr auto;gap:10px;border-bottom:1px solid #eee8ef}
+.modal-head h2{margin:0;font-size:22px;grid-column:1}
+.search{grid-column:1/2;border:1px solid #ddd6e1;border-radius:12px;padding:11px 13px;outline:none}
+.close{grid-column:2;grid-row:1/3;align-self:start;border:0;background:var(--mist);border-radius:12px;width:42px;height:42px;font-size:25px;color:var(--lav);cursor:pointer}
+.list{overflow:auto;padding:12px 18px 20px}
+.list-item{display:flex;gap:12px;align-items:center;width:100%;border:0;background:#fff;text-align:left;padding:11px 12px;border-radius:12px;color:var(--ink);cursor:pointer}
+.list-item:hover{background:var(--mist)}
+.list-item .num{width:38px;color:#aaa6b4;font-size:13px}
+.list-item .w{flex:1; font-weight: 500;}
+.list-item .mark{font-size:12px;color:var(--green);font-weight:700}
+.list .stressed-cap{color:var(--lav);font-weight:800; font-size: 1.1em;}
+.list .missing{color:var(--lav);font-weight:800}
+
+@media(max-width:650px){
+ header{flex-direction:column} .tg{align-self:flex-start}
+ .stats{grid-template-columns:repeat(3,1fr)} .stat{padding:10px} .stat b{font-size:19px}
+ .card{min-height:430px;padding:25px 15px} .footer{flex-direction:column;align-items:flex-start}
+ .modal-head{grid-template-columns:1fr 44px} .search{grid-column:1/2}
+ .options {flex-direction: column; width: 100%;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <img src="https://sun9-79.vkuserphoto.ru/s/v1/ig2/eytxgH8KKegCiKDAWnf1GqRz1ia8ozwnTTnVQdboCs3MTTFcI0N7mEwsv8ph6CaDknyVokmo_1VPTaq2bUJTkRKA.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1024x1024&from=bu&u=LVaZi9xhzHAY02NkPiKIU2GKWIylaODho9w6r8E1gjM&cs=1024x0" alt="Логотип" style="width: 48px; height: 48px; border-radius: 10px; object-fit: cover; flex-shrink: 0;">
+      <h1 style="margin: 0;">Тренажеры ЕГЭ</h1>
+    </div>
+    <p style="margin-top: 7px; color: #77758b;">по материалам ФИПИ</p>
+  </div>
+  <a class="tg" href="https://t.me/russegesh" target="_blank" rel="noopener noreferrer">ТГК «Алёнчик про русский ЕГЭ» · @russegesh</a>
+</header>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" data-tab="vocab">Словарные слова</button>
+  <button class="nav-tab" data-tab="stress">Ударения</button>
+  <button class="nav-tab" data-tab="adverbs">Наречия</button>
+</div>
+
+<!-- ======================= VOCAB TAB ======================= -->
+<div id="tab-vocab" class="tab-content active">
+  <div class="stats">
+    <div class="stat"><b id="vocab-mastered">0</b><span>выучено</span></div>
+    <div class="stat"><b id="vocab-mistakes">0</b><span>с ошибками</span></div>
+    <div class="stat"><b id="vocab-total">0</b><span>карточек</span></div>
+  </div>
+  <div class="progress"><i id="vocab-bar"></i></div>
+
+  <div class="toolbar">
+    <div class="order">
+      <button id="vocab-randomBtn" class="active">🎲 Рандом</button>
+      <button id="vocab-alphaBtn">А → Я</button>
+    </div>
+    <button class="ghost" id="vocab-listBtn">📚 Весь список</button>
+    <button class="danger" id="vocab-mistakesBtn">↻ Ошибки</button>
+  </div>
+
+  <main class="card">
+    <div class="badge" id="vocab-section">А</div>
+    <div id="vocab-counter" style="font-size:13px;color:#aaa6b4;margin-top:-12px;margin-bottom:16px"></div>
+    <div class="words" id="vocab-words"></div>
+    <div class="feedback" id="vocab-feedback"></div>
+    <div class="answer-reveal" id="vocab-reveal"></div>
+    <div class="actions">
+      <button class="ghost" id="vocab-showBtn">Показать ответ</button>
+      <button class="primary" id="vocab-checkBtn">Проверить</button>
+      <button class="primary" id="vocab-nextBtn" style="display:none">Следующая →</button>
+    </div>
+    <div class="help">Можно нажать Enter после заполнения.</div>
+  </main>
+  
+  <div class="footer">
+    <span>Прогресс сохраняется в браузере.</span>
+    <button class="linkbtn" id="vocab-resetBtn">Сбросить прогресс</button>
+  </div>
+</div>
+
+<!-- ======================= STRESS TAB ======================= -->
+<div id="tab-stress" class="tab-content">
+  <div class="stats">
+    <div class="stat"><b id="stress-mastered">0</b><span>выучено</span></div>
+    <div class="stat"><b id="stress-mistakes">0</b><span>с ошибками</span></div>
+    <div class="stat"><b id="stress-total">0</b><span>карточек</span></div>
+  </div>
+  <div class="progress"><i id="stress-bar"></i></div>
+
+  <div class="toolbar">
+    <div class="order">
+      <button id="stress-randomBtn" class="active">🎲 Рандом</button>
+      <button id="stress-alphaBtn">А → Я</button>
+    </div>
+    <button class="ghost" id="stress-listBtn">📚 Весь список</button>
+    <button class="danger" id="stress-mistakesBtn">↻ Ошибки</button>
+  </div>
+
+  <main class="card">
+    <div class="badge" id="stress-section">Группа</div>
+    <div id="stress-counter" style="font-size:13px;color:#aaa6b4;margin-top:-12px;margin-bottom:24px"></div>
+    <div id="stress-wordContainer"></div>
+    <div class="feedback" id="stress-feedback"></div>
+    <div class="actions">
+      <button class="ghost" id="stress-showBtn">Не знаю ответ</button>
+      <button class="primary" id="stress-nextBtn" style="display:none">Следующая →</button>
+    </div>
+    <div class="help">Кликните по гласной букве, на которую падает ударение.</div>
+  </main>
+  
+  <div class="footer">
+    <span>Прогресс сохраняется в браузере.</span>
+    <button class="linkbtn" id="stress-resetBtn">Сбросить прогресс</button>
+  </div>
+</div>
+
+<!-- ======================= ADVERBS TAB ======================= -->
+<div id="tab-adverbs" class="tab-content">
+  <div class="stats">
+    <div class="stat"><b id="adverbs-mastered">0</b><span>выучено</span></div>
+    <div class="stat"><b id="adverbs-mistakes">0</b><span>с ошибками</span></div>
+    <div class="stat"><b id="adverbs-total">0</b><span>карточек</span></div>
+  </div>
+  <div class="progress"><i id="adverbs-bar"></i></div>
+
+  <div class="toolbar">
+    <div class="order">
+      <button id="adverbs-randomBtn" class="active">🎲 Рандом</button>
+      <button id="adverbs-alphaBtn">А → Я</button>
+    </div>
+    <button class="ghost" id="adverbs-listBtn">📚 Весь список</button>
+    <button class="danger" id="adverbs-mistakesBtn">↻ Ошибки</button>
+  </div>
+
+  <main class="card">
+    <div class="badge">Правописание наречий</div>
+    <div id="adverbs-counter" style="font-size:13px;color:#aaa6b4;margin-top:-12px;margin-bottom:24px"></div>
+    
+    <div id="adverbs-wordContainer" class="task-word"></div>
+    <div id="adverbs-contextContainer" class="context-hint"></div>
+    
+    <div class="options" id="adverbs-optionsContainer">
+      <button class="option-btn" data-ans="слитно">Слитно</button>
+      <button class="option-btn" data-ans="раздельно">Раздельно</button>
+    </div>
+
+    <div class="feedback" id="adverbs-feedback"></div>
+    
+    <div class="actions">
+      <button class="ghost" id="adverbs-showBtn">Не знаю ответ</button>
+      <button class="primary" id="adverbs-nextBtn" style="display:none">Следующая →</button>
+    </div>
+    <div class="help">Выберите верное написание. Обращайте внимание на контекст!</div>
+  </main>
+  
+  <div class="footer">
+    <span>Прогресс сохраняется в браузере.</span>
+    <button class="linkbtn" id="adverbs-resetBtn">Сбросить прогресс</button>
+  </div>
+</div>
+
+</div> <!-- end app -->
+
+<!-- MODAL (Shared) -->
+<div class="overlay" id="overlay">
+ <div class="modal">
+  <div class="modal-head">
+   <h2 id="modal-title">Весь список</h2>
+   <input class="search" id="search" placeholder="Поиск слова…">
+   <button class="close" id="closeBtn">×</button>
+  </div>
+  <div class="list" id="modal-list"></div>
+ </div>
+</div>
+
+<script>
+// ==========================================
+// SHARED UTILS
+// ==========================================
+const VOWELS = 'аеёиоуыэюяАЕЁИОУЫЭЮЯ';
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function escapeAttr(s){return escapeHtml(s)}
+function shuffle(a){const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x;}
+
+let activeApp = 'vocab';
+
+// Tab Switching
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', (e) => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    const target = e.target.dataset.tab;
+    e.target.classList.add('active');
+    document.getElementById(`tab-${target}`).classList.add('active');
+    activeApp = target;
+    
+    // Rerender active app to ensure focus is correct
+    if(target === 'vocab') vocabApp.render();
+    if(target === 'stress') stressApp.render();
+    if(target === 'adverbs') adverbsApp.render();
+  });
+});
+
+// Modal Logic
+document.getElementById('closeBtn').onclick = () => document.getElementById('overlay').classList.remove('show');
+document.getElementById('overlay').addEventListener('click', e => { if(e.target.id === 'overlay') e.currentTarget.classList.remove('show') });
+document.getElementById('search').oninput = e => {
+  if (activeApp === 'vocab') vocabApp.renderList(e.target.value);
+  if (activeApp === 'stress') stressApp.renderList(e.target.value);
+  if (activeApp === 'adverbs') adverbsApp.renderList(e.target.value);
+};
+
+// Global keydown
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') document.getElementById('overlay').classList.remove('show');
+  if(e.key === 'Enter' && !document.getElementById('overlay').classList.contains('show')){
+    if (activeApp === 'vocab') vocabApp.handleEnter(e);
+    if (activeApp === 'stress') stressApp.handleEnter(e);
+    if (activeApp === 'adverbs') adverbsApp.handleEnter(e);
+  }
+});
+
+
+// ==========================================
+// VOCAB APP LOGIC
+// ==========================================
+// NOTE: I am fully embedding the original JSON to make this app self-contained.
+const vocabData = [{"source":"абитуриент","segments":[{"text":"а","red":true},{"text":"б","red":false},{"text":"и","red":true},{"text":"т","red":false},{"text":"у","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"ент","red":false}],"section":"А"},{"source":"абонемент","segments":[{"text":"а","red":true},{"text":"б","red":false},{"text":"о","red":true},{"text":"н","red":false},{"text":"е","red":true},{"text":"мент","red":false}],"section":"А"},{"source":"абрикос, абрикосовый","segments":[{"text":"а","red":true},{"text":"бр","red":false},{"text":"и","red":true},{"text":"кос, ","red":false},{"text":"а","red":true},{"text":"бр","red":false},{"text":"и","red":true},{"text":"косовый","red":false}],"section":"А"},{"source":"академия, академический","segments":[{"text":"а","red":true},{"text":"к","red":false},{"text":"а","red":true},{"text":"демия, ","red":false},{"text":"а","red":true},{"text":"к","red":false},{"text":"а","red":true},{"text":"демический","red":false}],"section":"А"},{"source":"аквамарин","segments":[{"text":"а","red":true},{"text":"кв","red":false},{"text":"а","red":true},{"text":"м","red":false},{"text":"а","red":true},{"text":"рин","red":false}],"section":"А"},{"source":"акварель, акварельный","segments":[{"text":"а","red":true},{"text":"кв","red":false},{"text":"а","red":true},{"text":"рель, ","red":false},{"text":"а","red":true},{"text":"кв","red":false},{"text":"а","red":true},{"text":"рельный","red":false}],"section":"А"},{"source":"аккомпанемент, аккомпанировать, аккомпаниатор","segments":[{"text":"а","red":true},{"text":"кк","red":false},{"text":"о","red":true},{"text":"мп","red":false},{"text":"а","red":true},{"text":"н","red":false},{"text":"е","red":true},{"text":"мент, ","red":false},{"text":"а","red":true},{"text":"кк","red":false},{"text":"о","red":true},{"text":"мп","red":false},{"text":"а","red":true},{"text":"нировать, ","red":false},{"text":"а","red":true},{"text":"кк","red":false},{"text":"о","red":true},{"text":"мп","red":false},{"text":"а","red":true},{"text":"ниатор","red":false}],"section":"А"},{"source":"аннотация","segments":[{"text":"а","red":true},{"text":"нн","red":false},{"text":"о","red":true},{"text":"тация","red":false}],"section":"А"},{"source":"антресоли","segments":[{"text":"а","red":true},{"text":"нтр","red":false},{"text":"е","red":true},{"text":"соли","red":false}],"section":"А"},{"source":"апелляция, апеллировать","segments":[{"text":"а","red":true},{"text":"п","red":false},{"text":"е","red":true},{"text":"лляция, ","red":false},{"text":"а","red":true},{"text":"п","red":false},{"text":"е","red":true},{"text":"ллировать","red":false}],"section":"А"},{"source":"аплодировать, аплодисменты","segments":[{"text":"а","red":true},{"text":"пл","red":false},{"text":"о","red":true},{"text":"дировать, ","red":false},{"text":"а","red":true},{"text":"пл","red":false},{"text":"о","red":true},{"text":"дисменты","red":false}],"section":"А"},{"source":"аппаратура","segments":[{"text":"а","red":true},{"text":"пп","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"тура","red":false}],"section":"А"},{"source":"аппетит","segments":[{"text":"а","red":true},{"text":"пп","red":false},{"text":"е","red":true},{"text":"тит","red":false}],"section":"А"},{"source":"аромат, ароматный","segments":[{"text":"а","red":true},{"text":"р","red":false},{"text":"о","red":true},{"text":"мат, ","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"о","red":true},{"text":"матный","red":false}],"section":"А"},{"source":"архитектор, архитектура","segments":[{"text":"а","red":true},{"text":"рх","red":false},{"text":"и","red":true},{"text":"тектор, ","red":false},{"text":"а","red":true},{"text":"рх","red":false},{"text":"и","red":true},{"text":"тектура","red":false}],"section":"А"},{"source":"асфальт, асфальтировать","segments":[{"text":"а","red":true},{"text":"сфальт, ","red":false},{"text":"а","red":true},{"text":"сфальтировать","red":false}],"section":"А"},{"source":"атмосфера, атмосферный","segments":[{"text":"а","red":true},{"text":"тм","red":false},{"text":"о","red":true},{"text":"сфера, ","red":false},{"text":"а","red":true},{"text":"тм","red":false},{"text":"о","red":true},{"text":"сферный","red":false}],"section":"А"},{"source":"аттракцион","segments":[{"text":"а","red":true},{"text":"ттр","red":false},{"text":"а","red":true},{"text":"кцион","red":false}],"section":"А"},{"source":"аукцион","segments":[{"text":"ау","red":true},{"text":"кцион","red":false}],"section":"А"},{"source":"багаж, багажный","segments":[{"text":"б","red":false},{"text":"а","red":true},{"text":"гаж, б","red":false},{"text":"а","red":true},{"text":"гажный","red":false}],"section":"Б"},{"source":"багровый, багроветь, багряный","segments":[{"text":"б","red":false},{"text":"а","red":true},{"text":"гровый, б","red":false},{"text":"а","red":true},{"text":"гроветь, б","red":false},{"text":"а","red":true},{"text":"гряный","red":false}],"section":"Б"},{"source":"бадминтон","segments":[{"text":"б","red":false},{"text":"а","red":true},{"text":"дм","red":false},{"text":"и","red":true},{"text":"нтон","red":false}],"section":"Б"},{"source":"баланс, балансировать","segments":[{"text":"б","red":false},{"text":"а","red":true},{"text":"ланс, б","red":false},{"text":"а","red":true},{"text":"лансировать","red":false}],"section":"Б"},{"source":"балкон, балконный","segments":[{"text":"б","red":false},{"text":"а","red":true},{"text":"лкон, б","red":false},{"text":"а","red":true},{"text":"лконный","red":false}],"section":"Б"},{"source":"барельеф","segments":[{"text":"б","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"е","red":true},{"text":"льеф","red":false}],"section":"Б"},{"source":"баскетбол, баскетбольный","segments":[{"text":"б","red":false},{"text":"а","red":true},{"text":"ск","red":false},{"text":"е","red":true},{"text":"тбол, б","red":false},{"text":"а","red":true},{"text":"ск","red":false},{"text":"е","red":true},{"text":"тбольный","red":false}],"section":"Б"},{"source":"бассейн","segments":[{"text":"б","red":false},{"text":"а","red":true},{"text":"ссейн","red":false}],"section":"Б"},{"source":"берёза, берёзовый","segments":[{"text":"б","red":false},{"text":"е","red":true},{"text":"рёза, б","red":false},{"text":"е","red":true},{"text":"рёзовый","red":false}],"section":"Б"},{"source":"бирюзовый","segments":[{"text":"б","red":false},{"text":"и","red":true},{"text":"рюзовый","red":false}],"section":"Б"},{"source":"богатый, богатство","segments":[{"text":"б","red":false},{"text":"о","red":true},{"text":"гатый, б","red":false},{"text":"о","red":true},{"text":"гатство","red":false}],"section":"Б"},{"source":"богатырь","segments":[{"text":"б","red":false},{"text":"о","red":true},{"text":"гатырь","red":false}],"section":"Б"},{"source":"брошюра, брошюровать","segments":[{"text":"бр","red":false},{"text":"о","red":true},{"text":"шюра, бр","red":false},{"text":"о","red":true},{"text":"шюровать","red":false}],"section":"Б"},{"source":"бюллетень","segments":[{"text":"б","red":false},{"text":"ю","red":true},{"text":"лл","red":false},{"text":"е","red":true},{"text":"тень","red":false}],"section":"Б"},{"source":"вакцина, вакцинация, вакцинировать","segments":[{"text":"в","red":false},{"text":"а","red":true},{"text":"кцина, в","red":false},{"text":"а","red":true},{"text":"кцинация, в","red":false},{"text":"а","red":true},{"text":"кцинировать","red":false}],"section":"В"},{"source":"вариант, вариативный","segments":[{"text":"в","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"ант, в","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"ативный","red":false}],"section":"В"},{"source":"велосипед, велосипедный","segments":[{"text":"в","red":false},{"text":"е","red":true},{"text":"л","red":false},{"text":"о","red":true},{"text":"с","red":false},{"text":"и","red":true},{"text":"пед, в","red":false},{"text":"е","red":true},{"text":"л","red":false},{"text":"о","red":true},{"text":"с","red":false},{"text":"и","red":true},{"text":"педный","red":false}],"section":"В"},{"source":"вентилятор, вентиляторный","segments":[{"text":"в","red":false},{"text":"е","red":true},{"text":"нт","red":false},{"text":"и","red":true},{"text":"лятор, в","red":false},{"text":"е","red":true},{"text":"нт","red":false},{"text":"и","red":true},{"text":"ляторный","red":false}],"section":"В"},{"source":"вермишель","segments":[{"text":"в","red":false},{"text":"е","red":true},{"text":"рм","red":false},{"text":"и","red":true},{"text":"шель","red":false}],"section":"В"},{"source":"вестибюль","segments":[{"text":"в","red":false},{"text":"е","red":true},{"text":"ст","red":false},{"text":"и","red":true},{"text":"бюль","red":false}],"section":"В"},{"source":"ветеран, ветеранский","segments":[{"text":"в","red":false},{"text":"е","red":true},{"text":"т","red":false},{"text":"е","red":true},{"text":"ран, в","red":false},{"text":"е","red":true},{"text":"т","red":false},{"text":"е","red":true},{"text":"ранский","red":false}],"section":"В"},{"source":"винегрет","segments":[{"text":"в","red":false},{"text":"и","red":true},{"text":"н","red":false},{"text":"е","red":true},{"text":"грет","red":false}],"section":"В"},{"source":"виртуальный","segments":[{"text":"в","red":false},{"text":"и","red":true},{"text":"рту","red":false},{"text":"а","red":true},{"text":"льный","red":false}],"section":"В"},{"source":"виртуоз, виртуозный","segments":[{"text":"в","red":false},{"text":"и","red":true},{"text":"ртуоз, в","red":false},{"text":"и","red":true},{"text":"ртуозный","red":false}],"section":"В"},{"source":"витраж, витражный","segments":[{"text":"в","red":false},{"text":"и","red":true},{"text":"траж, в","red":false},{"text":"и","red":true},{"text":"тражный","red":false}],"section":"В"},{"source":"владелец, владеть","segments":[{"text":"вл","red":false},{"text":"а","red":true},{"text":"делец, вл","red":false},{"text":"а","red":true},{"text":"деть","red":false}],"section":"В"},{"source":"возражать, возражение","segments":[{"text":"в","red":false},{"text":"о","red":true},{"text":"зр","red":false},{"text":"а","red":true},{"text":"жать, в","red":false},{"text":"о","red":true},{"text":"зр","red":false},{"text":"а","red":true},{"text":"жение","red":false}],"section":"В"},{"source":"вокзал, вокзальный","segments":[{"text":"в","red":false},{"text":"о","red":true},{"text":"кзал, в","red":false},{"text":"о","red":true},{"text":"кзальный","red":false}],"section":"В"},{"source":"волейбол, волейбольный","segments":[{"text":"в","red":false},{"text":"о","red":true},{"text":"л","red":false},{"text":"е","red":true},{"text":"йбол, в","red":false},{"text":"о","red":true},{"text":"л","red":false},{"text":"е","red":true},{"text":"йбольный","red":false}],"section":"В"},{"source":"воображать, воображение","segments":[{"text":"в","red":false},{"text":"оо","red":true},{"text":"бр","red":false},{"text":"а","red":true},{"text":"жать, в","red":false},{"text":"оо","red":true},{"text":"бр","red":false},{"text":"а","red":true},{"text":"жение","red":false}],"section":"В"},{"source":"воплотить, воплощать, воплощение","segments":[{"text":"в","red":false},{"text":"о","red":true},{"text":"пл","red":false},{"text":"о","red":true},{"text":"тить, в","red":false},{"text":"о","red":true},{"text":"пл","red":false},{"text":"о","red":true},{"text":"щать, в","red":false},{"text":"о","red":true},{"text":"пл","red":false},{"text":"о","red":true},{"text":"щение","red":false}],"section":"В"},{"source":"впечатлить, впечатление","segments":[{"text":"вп","red":false},{"text":"е","red":true},{"text":"ч","red":false},{"text":"а","red":true},{"text":"тлить, вп","red":false},{"text":"е","red":true},{"text":"ч","red":false},{"text":"а","red":true},{"text":"тление","red":false}],"section":"В"},{"source":"выразительный, выразить","segments":[{"text":"выр","red":false},{"text":"а","red":true},{"text":"зительный, выр","red":false},{"text":"а","red":true},{"text":"зить","red":false}],"section":"В"},{"source":"выражать, выражение","segments":[{"text":"выр","red":false},{"text":"а","red":true},{"text":"жать, выр","red":false},{"text":"а","red":true},{"text":"жение","red":false}],"section":"В"},{"source":"газон","segments":[{"text":"г","red":false},{"text":"а","red":true},{"text":"зон","red":false}],"section":"Г"},{"source":"галактика, галактический","segments":[{"text":"г","red":false},{"text":"а","red":true},{"text":"лактика, г","red":false},{"text":"а","red":true},{"text":"лактический","red":false}],"section":"Г"},{"source":"галерея","segments":[{"text":"г","red":false},{"text":"а","red":true},{"text":"л","red":false},{"text":"е","red":true},{"text":"рея","red":false}],"section":"Г"},{"source":"гармония, гармоничный","segments":[{"text":"г","red":false},{"text":"а","red":true},{"text":"рмония, г","red":false},{"text":"а","red":true},{"text":"рмоничный","red":false}],"section":"Г"},{"source":"гарнизон","segments":[{"text":"г","red":false},{"text":"а","red":true},{"text":"рнизон","red":false}],"section":"Г"},{"source":"геолог, геологический, геология","segments":[{"text":"г","red":false},{"text":"ео","red":true},{"text":"лог, г","red":false},{"text":"ео","red":true},{"text":"логический, г","red":false},{"text":"ео","red":true},{"text":"логия","red":false}],"section":"Г"},{"source":"герой, героизм, героический","segments":[{"text":"г","red":false},{"text":"е","red":true},{"text":"рой, г","red":false},{"text":"е","red":true},{"text":"роизм, г","red":false},{"text":"е","red":true},{"text":"роический","red":false}],"section":"Г"},{"source":"гипотеза, гипотетический","segments":[{"text":"г","red":false},{"text":"и","red":true},{"text":"потеза, г","red":false},{"text":"и","red":true},{"text":"потетический","red":false}],"section":"Г"},{"source":"гормон","segments":[{"text":"г","red":false},{"text":"о","red":true},{"text":"рмон","red":false}],"section":"Г"},{"source":"горячий","segments":[{"text":"г","red":false},{"text":"о","red":true},{"text":"рячий","red":false}],"section":"Г"},{"source":"горизонт, горизонтальный","segments":[{"text":"г","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"зонт, г","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"зонтальный","red":false}],"section":"Г"},{"source":"грамматика, грамматический","segments":[{"text":"гр","red":false},{"text":"а","red":true},{"text":"мматика, гр","red":false},{"text":"а","red":true},{"text":"мматический","red":false}],"section":"Г"},{"source":"грамота, грамотный","segments":[{"text":"гр","red":false},{"text":"а","red":true},{"text":"мота, гр","red":false},{"text":"а","red":true},{"text":"мотный","red":false}],"section":"Г"},{"source":"громадный","segments":[{"text":"гр","red":false},{"text":"о","red":true},{"text":"мадный","red":false}],"section":"Г"},{"source":"громоздкий, громоздить","segments":[{"text":"гр","red":false},{"text":"о","red":true},{"text":"моздкий, гр","red":false},{"text":"о","red":true},{"text":"моздить","red":false}],"section":"Г"},{"source":"дебаты","segments":[{"text":"д","red":false},{"text":"е","red":true},{"text":"баты","red":false}],"section":"Д"},{"source":"декларация","segments":[{"text":"д","red":false},{"text":"е","red":true},{"text":"кл","red":false},{"text":"а","red":true},{"text":"рация","red":false}],"section":"Д"},{"source":"декорация, декоративный","segments":[{"text":"д","red":false},{"text":"е","red":true},{"text":"к","red":false},{"text":"о","red":true},{"text":"рация, д","red":false},{"text":"е","red":true},{"text":"к","red":false},{"text":"о","red":true},{"text":"ративный","red":false}],"section":"Д"},{"source":"деликатес","segments":[{"text":"д","red":false},{"text":"е","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"к","red":false},{"text":"а","red":true},{"text":"тес","red":false}],"section":"Д"},{"source":"деликатный","segments":[{"text":"д","red":false},{"text":"е","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"катный","red":false}],"section":"Д"},{"source":"демократ, демократичный","segments":[{"text":"д","red":false},{"text":"е","red":true},{"text":"м","red":false},{"text":"о","red":true},{"text":"крат, д","red":false},{"text":"е","red":true},{"text":"м","red":false},{"text":"о","red":true},{"text":"кратичный","red":false}],"section":"Д"},{"source":"демонстрировать, демонстрация","segments":[{"text":"д","red":false},{"text":"е","red":true},{"text":"м","red":false},{"text":"о","red":true},{"text":"нстрировать, д","red":false},{"text":"е","red":true},{"text":"м","red":false},{"text":"о","red":true},{"text":"нстрация","red":false}],"section":"Д"},{"source":"диалог, диалоговый, диалогический","segments":[{"text":"д","red":false},{"text":"иа","red":true},{"text":"лог, д","red":false},{"text":"иа","red":true},{"text":"логовый, д","red":false},{"text":"иа","red":true},{"text":"логический","red":false}],"section":"Д"},{"source":"диапазон","segments":[{"text":"д","red":false},{"text":"иа","red":true},{"text":"пазон","red":false}],"section":"Д"},{"source":"динамика, динамический, динамичный","segments":[{"text":"д","red":false},{"text":"и","red":true},{"text":"намика, д","red":false},{"text":"и","red":true},{"text":"намический, д","red":false},{"text":"и","red":true},{"text":"намичный","red":false}],"section":"Д"},{"source":"дирижёр, дирижировать","segments":[{"text":"д","red":false},{"text":"и","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"жёр, д","red":false},{"text":"и","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"жировать","red":false}],"section":"Д"},{"source":"диспетчер, диспетчерский","segments":[{"text":"д","red":false},{"text":"и","red":true},{"text":"спетчер, д","red":false},{"text":"и","red":true},{"text":"спетчерский","red":false}],"section":"Д"},{"source":"дистанция, дистанционный","segments":[{"text":"д","red":false},{"text":"и","red":true},{"text":"станция, д","red":false},{"text":"и","red":true},{"text":"станционный","red":false}],"section":"Д"},{"source":"дисциплина, дисциплинарный, дисциплинировать","segments":[{"text":"д","red":false},{"text":"и","red":true},{"text":"сц","red":false},{"text":"и","red":true},{"text":"плина, д","red":false},{"text":"и","red":true},{"text":"сц","red":false},{"text":"и","red":true},{"text":"плинарный, д","red":false},{"text":"и","red":true},{"text":"сц","red":false},{"text":"и","red":true},{"text":"плинировать","red":false}],"section":"Д"},{"source":"желание, желать","segments":[{"text":"ж","red":false},{"text":"е","red":true},{"text":"лание, ж","red":false},{"text":"е","red":true},{"text":"лать","red":false}],"section":"Ж"},{"source":"жираф","segments":[{"text":"ж","red":false},{"text":"и","red":true},{"text":"раф","red":false}],"section":"Ж"},{"source":"жокей","segments":[{"text":"ж","red":false},{"text":"о","red":true},{"text":"кей","red":false}],"section":"Ж"},{"source":"жонглёр","segments":[{"text":"ж","red":false},{"text":"о","red":true},{"text":"нглёр","red":false}],"section":"Ж"},{"source":"жюри","segments":[{"text":"ж","red":false},{"text":"ю","red":true},{"text":"ри","red":false}],"section":"Ж"},{"source":"знакомить, знакомиться, знакомый","segments":[{"text":"зн","red":false},{"text":"а","red":true},{"text":"комить, зн","red":false},{"text":"а","red":true},{"text":"комиться, зн","red":false},{"text":"а","red":true},{"text":"комый","red":false}],"section":"З"},{"source":"знаменитый","segments":[{"text":"зн","red":false},{"text":"а","red":true},{"text":"менитый","red":false}],"section":"З"},{"source":"знаменовать","segments":[{"text":"зн","red":false},{"text":"а","red":true},{"text":"меновать","red":false}],"section":"З"},{"source":"игнорировать","segments":[{"text":"и","red":true},{"text":"гн","red":false},{"text":"о","red":true},{"text":"рировать","red":false}],"section":"И"},{"source":"идеал, идеализировать, идеалист, идеальный","segments":[{"text":"и","red":true},{"text":"д","red":false},{"text":"е","red":true},{"text":"ал, ","red":false},{"text":"и","red":true},{"text":"д","red":false},{"text":"е","red":true},{"text":"ализировать, ","red":false},{"text":"и","red":true},{"text":"д","red":false},{"text":"е","red":true},{"text":"алист, ","red":false},{"text":"и","red":true},{"text":"д","red":false},{"text":"е","red":true},{"text":"альный","red":false}],"section":"И"},{"source":"иждивенец","segments":[{"text":"и","red":true},{"text":"жд","red":false},{"text":"и","red":true},{"text":"венец","red":false}],"section":"И"},{"source":"иллюзия, иллюзионист","segments":[{"text":"и","red":true},{"text":"ллюзия, ","red":false},{"text":"и","red":true},{"text":"ллюзионист","red":false}],"section":"И"},{"source":"индивид, индивидуальный","segments":[{"text":"и","red":true},{"text":"нд","red":false},{"text":"и","red":true},{"text":"вид, ","red":false},{"text":"и","red":true},{"text":"нд","red":false},{"text":"и","red":true},{"text":"видуальный","red":false}],"section":"И"},{"source":"иней","segments":[{"text":"и","red":true},{"text":"ней","red":false}],"section":"И"},{"source":"инженер, инженерный, инженерский","segments":[{"text":"и","red":true},{"text":"нж","red":false},{"text":"е","red":true},{"text":"нер, ","red":false},{"text":"и","red":true},{"text":"нж","red":false},{"text":"е","red":true},{"text":"нерный, ","red":false},{"text":"и","red":true},{"text":"нж","red":false},{"text":"е","red":true},{"text":"нерский","red":false}],"section":"И"},{"source":"инициатива, инициативный","segments":[{"text":"и","red":true},{"text":"н","red":false},{"text":"и","red":true},{"text":"ц","red":false},{"text":"и","red":true},{"text":"атива, ","red":false},{"text":"и","red":true},{"text":"н","red":false},{"text":"и","red":true},{"text":"ц","red":false},{"text":"и","red":true},{"text":"ативный","red":false}],"section":"И"},{"source":"интеллект, интеллектуальный","segments":[{"text":"и","red":true},{"text":"нт","red":false},{"text":"е","red":true},{"text":"ллект, ","red":false},{"text":"и","red":true},{"text":"нт","red":false},{"text":"е","red":true},{"text":"ллектуальный","red":false}],"section":"И"},{"source":"интеллигент, интеллигентный, интеллигенция","segments":[{"text":"и","red":true},{"text":"нт","red":false},{"text":"е","red":true},{"text":"лл","red":false},{"text":"и","red":true},{"text":"гент, ","red":false},{"text":"и","red":true},{"text":"нт","red":false},{"text":"е","red":true},{"text":"лл","red":false},{"text":"и","red":true},{"text":"гентный, ","red":false},{"text":"и","red":true},{"text":"нт","red":false},{"text":"е","red":true},{"text":"лл","red":false},{"text":"и","red":true},{"text":"генция","red":false}],"section":"И"},{"source":"интенсивный","segments":[{"text":"и","red":true},{"text":"нт","red":false},{"text":"е","red":true},{"text":"нсивный","red":false}],"section":"И"},{"source":"интерьер, интерьерный","segments":[{"text":"и","red":true},{"text":"нт","red":false},{"text":"е","red":true},{"text":"рьер, ","red":false},{"text":"и","red":true},{"text":"нт","red":false},{"text":"е","red":true},{"text":"рьерный","red":false}],"section":"И"},{"source":"исказить, искажение","segments":[{"text":"и","red":true},{"text":"ск","red":false},{"text":"а","red":true},{"text":"зить, ","red":false},{"text":"и","red":true},{"text":"ск","red":false},{"text":"а","red":true},{"text":"жение","red":false}],"section":"И"},{"source":"истина, истинный","segments":[{"text":"и","red":true},{"text":"стина, ","red":false},{"text":"и","red":true},{"text":"стинный","red":false}],"section":"И"},{"source":"кампания (мероприятие)","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"мпания (мероприятие)","red":false}],"section":"К"},{"source":"каморка","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"морка","red":false}],"section":"К"},{"source":"каникулы","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"никулы","red":false}],"section":"К"},{"source":"канитель","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"н","red":false},{"text":"и","red":true},{"text":"тель","red":false}],"section":"К"},{"source":"канонада","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"н","red":false},{"text":"о","red":true},{"text":"нада","red":false}],"section":"К"},{"source":"канцелярия, канцелярский","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"нц","red":false},{"text":"е","red":true},{"text":"лярия, к","red":false},{"text":"а","red":true},{"text":"нц","red":false},{"text":"е","red":true},{"text":"лярский","red":false}],"section":"К"},{"source":"капюшон","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"п","red":false},{"text":"ю","red":true},{"text":"шон","red":false}],"section":"К"},{"source":"кардинальный","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"рд","red":false},{"text":"и","red":true},{"text":"нальный","red":false}],"section":"К"},{"source":"карикатура","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"к","red":false},{"text":"а","red":true},{"text":"тура","red":false}],"section":"К"},{"source":"касатка (птица)","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"сатка (птица)","red":false}],"section":"К"},{"source":"катакомба","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"т","red":false},{"text":"а","red":true},{"text":"комба","red":false}],"section":"К"},{"source":"катастрофа","segments":[{"text":"к","red":false},{"text":"а","red":true},{"text":"т","red":false},{"text":"а","red":true},{"text":"строфа","red":false}],"section":"К"},{"source":"квалификация","segments":[{"text":"кв","red":false},{"text":"а","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"фикация","red":false}],"section":"К"},{"source":"квитанция","segments":[{"text":"кв","red":false},{"text":"и","red":true},{"text":"танция","red":false}],"section":"К"},{"source":"кинематограф","segments":[{"text":"к","red":false},{"text":"и","red":true},{"text":"н","red":false},{"text":"е","red":true},{"text":"м","red":false},{"text":"а","red":true},{"text":"тограф","red":false}],"section":"К"},{"source":"коварный, коварство","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"варный, к","red":false},{"text":"о","red":true},{"text":"варство","red":false}],"section":"К"},{"source":"колдун, колдовать, колдовской","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"лдун, к","red":false},{"text":"о","red":true},{"text":"лдовать, к","red":false},{"text":"о","red":true},{"text":"лдовской","red":false}],"section":"К"},{"source":"колебание, колебаться","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"л","red":false},{"text":"е","red":true},{"text":"бание, к","red":false},{"text":"о","red":true},{"text":"л","red":false},{"text":"е","red":true},{"text":"баться","red":false}],"section":"К"},{"source":"коллектив, коллекция","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"лл","red":false},{"text":"е","red":true},{"text":"ктив, к","red":false},{"text":"о","red":true},{"text":"лл","red":false},{"text":"е","red":true},{"text":"кция","red":false}],"section":"К"},{"source":"колоссальный","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"л","red":false},{"text":"о","red":true},{"text":"ссальный","red":false}],"section":"К"},{"source":"колыхать, колыхаться","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"лыхать, к","red":false},{"text":"о","red":true},{"text":"лыхаться","red":false}],"section":"К"},{"source":"комбинация","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"мб","red":false},{"text":"и","red":true},{"text":"нация","red":false}],"section":"К"},{"source":"комедия","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"медия","red":false}],"section":"К"},{"source":"компания (группа людей, фирма)","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"мпания (группа людей, фирма)","red":false}],"section":"К"},{"source":"компетентный","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"мп","red":false},{"text":"е","red":true},{"text":"тентный","red":false}],"section":"К"},{"source":"компонент","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"мп","red":false},{"text":"о","red":true},{"text":"нент","red":false}],"section":"К"},{"source":"компьютер","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"мпь","red":false},{"text":"ю","red":true},{"text":"тер","red":false}],"section":"К"},{"source":"комфорт","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"мфорт","red":false}],"section":"К"},{"source":"конверт","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"нверт","red":false}],"section":"К"},{"source":"конкурент, конкуренция","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"нкур","red":false},{"text":"е","red":true},{"text":"нт, к","red":false},{"text":"о","red":true},{"text":"нкур","red":false},{"text":"е","red":true},{"text":"нция","red":false}],"section":"К"},{"source":"континент","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"нт","red":false},{"text":"и","red":true},{"text":"нент","red":false}],"section":"К"},{"source":"конференция","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"нф","red":false},{"text":"е","red":true},{"text":"ренция","red":false}],"section":"К"},{"source":"конфликт","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"нфликт","red":false}],"section":"К"},{"source":"конфорка","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"нфорка","red":false}],"section":"К"},{"source":"корифей","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"фей","red":false}],"section":"К"},{"source":"коричневый","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"ричневый","red":false}],"section":"К"},{"source":"корзина","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"рзина","red":false}],"section":"К"},{"source":"король, королевство","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"роль, к","red":false},{"text":"о","red":true},{"text":"ролевство","red":false}],"section":"К"},{"source":"косатка (млекопитающее)","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"сатка (млекопитающее)","red":false}],"section":"К"},{"source":"космос, космический","segments":[{"text":"к","red":false},{"text":"о","red":true},{"text":"смос, к","red":false},{"text":"о","red":true},{"text":"смический","red":false}],"section":"К"},{"source":"кромешный","segments":[{"text":"кр","red":false},{"text":"о","red":true},{"text":"мешный","red":false}],"section":"К"},{"source":"лабиринт","segments":[{"text":"л","red":false},{"text":"а","red":true},{"text":"б","red":false},{"text":"и","red":true},{"text":"ринт","red":false}],"section":"Л"},{"source":"легенда, легендарный","segments":[{"text":"л","red":false},{"text":"е","red":true},{"text":"г","red":false},{"text":"е","red":true},{"text":"нда, л","red":false},{"text":"е","red":true},{"text":"г","red":false},{"text":"е","red":true},{"text":"ндарный","red":false}],"section":"Л"},{"source":"лелеять","segments":[{"text":"л","red":false},{"text":"е","red":true},{"text":"леять","red":false}],"section":"Л"},{"source":"либерал, либеральный","segments":[{"text":"л","red":false},{"text":"и","red":true},{"text":"б","red":false},{"text":"е","red":true},{"text":"рал, л","red":false},{"text":"и","red":true},{"text":"б","red":false},{"text":"е","red":true},{"text":"ральный","red":false}],"section":"Л"},{"source":"мажор, мажорный","segments":[{"text":"м","red":false},{"text":"а","red":true},{"text":"жор, м","red":false},{"text":"а","red":true},{"text":"жорный","red":false}],"section":"М"},{"source":"материал, материальный","segments":[{"text":"м","red":false},{"text":"а","red":true},{"text":"т","red":false},{"text":"е","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"ал, м","red":false},{"text":"а","red":true},{"text":"т","red":false},{"text":"е","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"альный","red":false}],"section":"М"},{"source":"мгновение, мгновенный","segments":[{"text":"мгн","red":false},{"text":"о","red":true},{"text":"вение, мгн","red":false},{"text":"о","red":true},{"text":"венный","red":false}],"section":"М"},{"source":"менталитет, ментальный","segments":[{"text":"м","red":false},{"text":"е","red":true},{"text":"нт","red":false},{"text":"а","red":true},{"text":"литет, м","red":false},{"text":"е","red":true},{"text":"нтальный","red":false}],"section":"М"},{"source":"меридиан","segments":[{"text":"м","red":false},{"text":"е","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"диан","red":false}],"section":"М"},{"source":"мероприятие","segments":[{"text":"м","red":false},{"text":"е","red":true},{"text":"р","red":false},{"text":"о","red":true},{"text":"приятие","red":false}],"section":"М"},{"source":"метафора, метафорический","segments":[{"text":"м","red":false},{"text":"е","red":true},{"text":"тафора, м","red":false},{"text":"е","red":true},{"text":"тафорический","red":false}],"section":"М"},{"source":"механизм, механический","segments":[{"text":"м","red":false},{"text":"е","red":true},{"text":"х","red":false},{"text":"а","red":true},{"text":"низм, м","red":false},{"text":"е","red":true},{"text":"х","red":false},{"text":"а","red":true},{"text":"нический","red":false}],"section":"М"},{"source":"минерал, минеральный","segments":[{"text":"м","red":false},{"text":"и","red":true},{"text":"н","red":false},{"text":"е","red":true},{"text":"рал, м","red":false},{"text":"и","red":true},{"text":"н","red":false},{"text":"е","red":true},{"text":"ральный","red":false}],"section":"М"},{"source":"минор, минорный","segments":[{"text":"м","red":false},{"text":"и","red":true},{"text":"нор, м","red":false},{"text":"и","red":true},{"text":"норный","red":false}],"section":"М"},{"source":"монолит, монолитный","segments":[{"text":"м","red":false},{"text":"о","red":true},{"text":"н","red":false},{"text":"о","red":true},{"text":"лит, м","red":false},{"text":"о","red":true},{"text":"н","red":false},{"text":"о","red":true},{"text":"литный","red":false}],"section":"М"},{"source":"мораторий","segments":[{"text":"м","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"торий","red":false}],"section":"М"},{"source":"мотив, мотивировать, мотивация","segments":[{"text":"м","red":false},{"text":"о","red":true},{"text":"тив, м","red":false},{"text":"о","red":true},{"text":"тивировать, м","red":false},{"text":"о","red":true},{"text":"тивация","red":false}],"section":"М"},{"source":"мятеж, мятежный","segments":[{"text":"м","red":false},{"text":"я","red":true},{"text":"теж, м","red":false},{"text":"я","red":true},{"text":"тежный","red":false}],"section":"М"},{"source":"наваждение","segments":[{"text":"н","red":false},{"text":"а","red":true},{"text":"в","red":false},{"text":"а","red":true},{"text":"ждение","red":false}],"section":"Н"},{"source":"насекомые","segments":[{"text":"н","red":false},{"text":"а","red":true},{"text":"с","red":false},{"text":"е","red":true},{"text":"комые","red":false}],"section":"Н"},{"source":"наслаждаться, наслаждение","segments":[{"text":"н","red":false},{"text":"а","red":true},{"text":"сл","red":false},{"text":"а","red":true},{"text":"ждаться, н","red":false},{"text":"а","red":true},{"text":"сл","red":false},{"text":"а","red":true},{"text":"ждение","red":false}],"section":"Н"},{"source":"недосягаемый","segments":[{"text":"н","red":false},{"text":"е","red":true},{"text":"д","red":false},{"text":"о","red":true},{"text":"сягаемый","red":false}],"section":"Н"},{"source":"новелла","segments":[{"text":"н","red":false},{"text":"о","red":true},{"text":"велла","red":false}],"section":"Н"},{"source":"обаяние, обаятельный","segments":[{"text":"о","red":true},{"text":"б","red":false},{"text":"а","red":true},{"text":"яние, ","red":false},{"text":"о","red":true},{"text":"б","red":false},{"text":"а","red":true},{"text":"ятельный","red":false}],"section":"О"},{"source":"обитать, обитатель","segments":[{"text":"о","red":true},{"text":"б","red":false},{"text":"и","red":true},{"text":"тать, ","red":false},{"text":"о","red":true},{"text":"б","red":false},{"text":"и","red":true},{"text":"татель","red":false}],"section":"О"},{"source":"обнаружить","segments":[{"text":"о","red":true},{"text":"бн","red":false},{"text":"а","red":true},{"text":"ружить","red":false}],"section":"О"},{"source":"обоняние, обонятельный","segments":[{"text":"о","red":true},{"text":"б","red":false},{"text":"о","red":true},{"text":"няние, ","red":false},{"text":"о","red":true},{"text":"б","red":false},{"text":"о","red":true},{"text":"нятельный","red":false}],"section":"О"},{"source":"оборона, оборонять","segments":[{"text":"о","red":true},{"text":"б","red":false},{"text":"о","red":true},{"text":"рона, ","red":false},{"text":"о","red":true},{"text":"б","red":false},{"text":"о","red":true},{"text":"ронять","red":false}],"section":"О"},{"source":"одолеть","segments":[{"text":"о","red":true},{"text":"д","red":false},{"text":"о","red":true},{"text":"леть","red":false}],"section":"О"},{"source":"озорной, озорничать, озорник","segments":[{"text":"о","red":true},{"text":"з","red":false},{"text":"о","red":true},{"text":"рной, ","red":false},{"text":"о","red":true},{"text":"з","red":false},{"text":"о","red":true},{"text":"рничать, ","red":false},{"text":"о","red":true},{"text":"з","red":false},{"text":"о","red":true},{"text":"рник","red":false}],"section":"О"},{"source":"опекун, опекунский","segments":[{"text":"о","red":true},{"text":"п","red":false},{"text":"е","red":true},{"text":"кун, ","red":false},{"text":"о","red":true},{"text":"п","red":false},{"text":"е","red":true},{"text":"кунский","red":false}],"section":"О"},{"source":"оптимист, оптимистичный, оптимизм","segments":[{"text":"о","red":true},{"text":"пт","red":false},{"text":"и","red":true},{"text":"мист, ","red":false},{"text":"о","red":true},{"text":"пт","red":false},{"text":"и","red":true},{"text":"мистичный, ","red":false},{"text":"о","red":true},{"text":"пт","red":false},{"text":"и","red":true},{"text":"мизм","red":false}],"section":"О"},{"source":"оранжерея","segments":[{"text":"о","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"нж","red":false},{"text":"е","red":true},{"text":"рея","red":false}],"section":"О"},{"source":"орбита, орбитальный","segments":[{"text":"о","red":true},{"text":"рбита, ","red":false},{"text":"о","red":true},{"text":"рбитальный","red":false}],"section":"О"},{"source":"организовать, организация","segments":[{"text":"о","red":true},{"text":"рг","red":false},{"text":"а","red":true},{"text":"низовать, ","red":false},{"text":"о","red":true},{"text":"рг","red":false},{"text":"а","red":true},{"text":"низация","red":false}],"section":"О"},{"source":"оригинальный","segments":[{"text":"о","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"г","red":false},{"text":"и","red":true},{"text":"нальный","red":false}],"section":"О"},{"source":"ориентир, ориентироваться","segments":[{"text":"о","red":true},{"text":"р","red":false},{"text":"ие","red":true},{"text":"нтир, ","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"ие","red":true},{"text":"нтироваться","red":false}],"section":"О"},{"source":"орнамент","segments":[{"text":"о","red":true},{"text":"рнамент","red":false}],"section":"О"},{"source":"осторожный, осторожность","segments":[{"text":"о","red":true},{"text":"ст","red":false},{"text":"о","red":true},{"text":"рожный, ","red":false},{"text":"о","red":true},{"text":"ст","red":false},{"text":"о","red":true},{"text":"рожность","red":false}],"section":"О"},{"source":"офицер, офицерский","segments":[{"text":"о","red":true},{"text":"ф","red":false},{"text":"и","red":true},{"text":"цер, ","red":false},{"text":"о","red":true},{"text":"ф","red":false},{"text":"и","red":true},{"text":"церский","red":false}],"section":"О"},{"source":"ошеломить, ошеломительный, ошеломлённый","segments":[{"text":"о","red":true},{"text":"ш","red":false},{"text":"е","red":true},{"text":"л","red":false},{"text":"о","red":true},{"text":"мить, ","red":false},{"text":"о","red":true},{"text":"ш","red":false},{"text":"е","red":true},{"text":"л","red":false},{"text":"о","red":true},{"text":"мительный, ","red":false},{"text":"о","red":true},{"text":"ш","red":false},{"text":"е","red":true},{"text":"л","red":false},{"text":"о","red":true},{"text":"млённый","red":false}],"section":"О"},{"source":"палисадник","segments":[{"text":"п","red":false},{"text":"а","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"садник","red":false}],"section":"П"},{"source":"палитра","segments":[{"text":"п","red":false},{"text":"а","red":true},{"text":"литра","red":false}],"section":"П"},{"source":"панорама, панорамный","segments":[{"text":"п","red":false},{"text":"а","red":true},{"text":"н","red":false},{"text":"о","red":true},{"text":"рама, п","red":false},{"text":"а","red":true},{"text":"н","red":false},{"text":"о","red":true},{"text":"рамный","red":false}],"section":"П"},{"source":"панцирь","segments":[{"text":"п","red":false},{"text":"а","red":true},{"text":"нцирь","red":false}],"section":"П"},{"source":"параграф","segments":[{"text":"п","red":false},{"text":"а","red":true},{"text":"раграф","red":false}],"section":"П"},{"source":"парадокс, парадоксальный","segments":[{"text":"п","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"докс, п","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"доксальный","red":false}],"section":"П"},{"source":"парашют","segments":[{"text":"п","red":false},{"text":"а","red":true},{"text":"рашют","red":false}],"section":"П"},{"source":"патриот, патриотизм","segments":[{"text":"п","red":false},{"text":"а","red":true},{"text":"тр","red":false},{"text":"и","red":true},{"text":"от, п","red":false},{"text":"а","red":true},{"text":"тр","red":false},{"text":"и","red":true},{"text":"отизм","red":false}],"section":"П"},{"source":"пейзаж, пейзажный","segments":[{"text":"п","red":false},{"text":"е","red":true},{"text":"йзаж, п","red":false},{"text":"е","red":true},{"text":"йзажный","red":false}],"section":"П"},{"source":"перила","segments":[{"text":"п","red":false},{"text":"е","red":true},{"text":"рила","red":false}],"section":"П"},{"source":"период, периодический","segments":[{"text":"п","red":false},{"text":"е","red":true},{"text":"риод, п","red":false},{"text":"е","red":true},{"text":"риодический","red":false}],"section":"П"},{"source":"пессимист, пессимистичный, пессимизм","segments":[{"text":"п","red":false},{"text":"е","red":true},{"text":"сс","red":false},{"text":"и","red":true},{"text":"мист, п","red":false},{"text":"е","red":true},{"text":"сс","red":false},{"text":"и","red":true},{"text":"мистичный, п","red":false},{"text":"е","red":true},{"text":"сс","red":false},{"text":"и","red":true},{"text":"мизм","red":false}],"section":"П"},{"source":"подлинный","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"длинный","red":false}],"section":"П"},{"source":"подражать, подражание, подражатель","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"др","red":false},{"text":"а","red":true},{"text":"жать, п","red":false},{"text":"о","red":true},{"text":"др","red":false},{"text":"а","red":true},{"text":"жание, п","red":false},{"text":"о","red":true},{"text":"др","red":false},{"text":"а","red":true},{"text":"жатель","red":false}],"section":"П"},{"source":"позиция","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"зиция","red":false}],"section":"П"},{"source":"покой","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"кой","red":false}],"section":"П"},{"source":"поколение","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"к","red":false},{"text":"о","red":true},{"text":"ление","red":false}],"section":"П"},{"source":"полемика, полемичный","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"лемика, п","red":false},{"text":"о","red":true},{"text":"лемичный","red":false}],"section":"П"},{"source":"полировать, полированный","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"ровать, п","red":false},{"text":"о","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"рованный","red":false}],"section":"П"},{"source":"поражать, поражение","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"жать, п","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"жение","red":false}],"section":"П"},{"source":"поразить, поразительный","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"зить, п","red":false},{"text":"о","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"зительный","red":false}],"section":"П"},{"source":"посещать, посещение, посетитель","segments":[{"text":"п","red":false},{"text":"о","red":true},{"text":"с","red":false},{"text":"е","red":true},{"text":"щать, п","red":false},{"text":"о","red":true},{"text":"с","red":false},{"text":"е","red":true},{"text":"щение, п","red":false},{"text":"о","red":true},{"text":"с","red":false},{"text":"е","red":true},{"text":"титель","red":false}],"section":"П"},{"source":"правило, правильный","segments":[{"text":"пр","red":false},{"text":"а","red":true},{"text":"вило, пр","red":false},{"text":"а","red":true},{"text":"вильный","red":false}],"section":"П"},{"source":"предварительный","segments":[{"text":"пр","red":false},{"text":"е","red":true},{"text":"дв","red":false},{"text":"а","red":true},{"text":"рительный","red":false}],"section":"П"},{"source":"презентация","segments":[{"text":"пр","red":false},{"text":"е","red":true},{"text":"з","red":false},{"text":"е","red":true},{"text":"нтация","red":false}],"section":"П"},{"source":"президент, президентский","segments":[{"text":"пр","red":false},{"text":"е","red":true},{"text":"з","red":false},{"text":"и","red":true},{"text":"дент, пр","red":false},{"text":"е","red":true},{"text":"з","red":false},{"text":"и","red":true},{"text":"дентский","red":false}],"section":"П"},{"source":"президиум","segments":[{"text":"пр","red":false},{"text":"е","red":true},{"text":"з","red":false},{"text":"и","red":true},{"text":"диум","red":false}],"section":"П"},{"source":"преобразить, преображение","segments":[{"text":"пр","red":false},{"text":"ео","red":true},{"text":"бр","red":false},{"text":"а","red":true},{"text":"зить, пр","red":false},{"text":"ео","red":true},{"text":"бр","red":false},{"text":"а","red":true},{"text":"жение","red":false}],"section":"П"},{"source":"преобразовать, преобразование, преобразователь","segments":[{"text":"пр","red":false},{"text":"ео","red":true},{"text":"бр","red":false},{"text":"а","red":true},{"text":"зовать, пр","red":false},{"text":"ео","red":true},{"text":"бр","red":false},{"text":"а","red":true},{"text":"зование, пр","red":false},{"text":"ео","red":true},{"text":"бр","red":false},{"text":"а","red":true},{"text":"зователь","red":false}],"section":"П"},{"source":"преодолеть, преодоление","segments":[{"text":"пр","red":false},{"text":"ео","red":true},{"text":"д","red":false},{"text":"о","red":true},{"text":"леть, пр","red":false},{"text":"ео","red":true},{"text":"д","red":false},{"text":"о","red":true},{"text":"ление","red":false}],"section":"П"},{"source":"прецедент","segments":[{"text":"пр","red":false},{"text":"е","red":true},{"text":"ц","red":false},{"text":"е","red":true},{"text":"дент","red":false}],"section":"П"},{"source":"привилегия, привилегированный","segments":[{"text":"пр","red":false},{"text":"и","red":true},{"text":"в","red":false},{"text":"и","red":true},{"text":"легия, пр","red":false},{"text":"и","red":true},{"text":"в","red":false},{"text":"и","red":true},{"text":"легированный","red":false}],"section":"П"},{"source":"примитивный","segments":[{"text":"пр","red":false},{"text":"и","red":true},{"text":"м","red":false},{"text":"и","red":true},{"text":"тивный","red":false}],"section":"П"},{"source":"приоритет, приоритетный","segments":[{"text":"пр","red":false},{"text":"ио","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"тет, пр","red":false},{"text":"ио","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"тетный","red":false}],"section":"П"},{"source":"провинция, провинциальный","segments":[{"text":"пр","red":false},{"text":"о","red":true},{"text":"в","red":false},{"text":"и","red":true},{"text":"нция, пр","red":false},{"text":"о","red":true},{"text":"в","red":false},{"text":"и","red":true},{"text":"нциальный","red":false}],"section":"П"},{"source":"провоцировать","segments":[{"text":"пр","red":false},{"text":"о","red":true},{"text":"в","red":false},{"text":"о","red":true},{"text":"цировать","red":false}],"section":"П"},{"source":"проницательный","segments":[{"text":"пр","red":false},{"text":"о","red":true},{"text":"н","red":false},{"text":"и","red":true},{"text":"цательный","red":false}],"section":"П"},{"source":"радиатор","segments":[{"text":"р","red":false},{"text":"а","red":true},{"text":"д","red":false},{"text":"и","red":true},{"text":"атор","red":false}],"section":"Р"},{"source":"рациональный, рационализировать","segments":[{"text":"р","red":false},{"text":"а","red":true},{"text":"ц","red":false},{"text":"ио","red":true},{"text":"нальный, р","red":false},{"text":"а","red":true},{"text":"ц","red":false},{"text":"ио","red":true},{"text":"нализировать","red":false}],"section":"Р"},{"source":"реалист, реалистичный, реализм","segments":[{"text":"р","red":false},{"text":"еа","red":true},{"text":"лист, р","red":false},{"text":"еа","red":true},{"text":"листичный, р","red":false},{"text":"еа","red":true},{"text":"лизм","red":false}],"section":"Р"},{"source":"режиссёр, режиссёрский","segments":[{"text":"р","red":false},{"text":"е","red":true},{"text":"ж","red":false},{"text":"и","red":true},{"text":"ссёр, р","red":false},{"text":"е","red":true},{"text":"ж","red":false},{"text":"и","red":true},{"text":"ссёрский","red":false}],"section":"Р"},{"source":"резидент","segments":[{"text":"р","red":false},{"text":"е","red":true},{"text":"з","red":false},{"text":"и","red":true},{"text":"дент","red":false}],"section":"Р"},{"source":"резиденция","segments":[{"text":"р","red":false},{"text":"е","red":true},{"text":"з","red":false},{"text":"и","red":true},{"text":"денция","red":false}],"section":"Р"},{"source":"ремесло, ремесленный","segments":[{"text":"р","red":false},{"text":"е","red":true},{"text":"м","red":false},{"text":"е","red":true},{"text":"сло, р","red":false},{"text":"е","red":true},{"text":"м","red":false},{"text":"е","red":true},{"text":"сленный","red":false}],"section":"Р"},{"source":"реставрация, реставрационный","segments":[{"text":"р","red":false},{"text":"е","red":true},{"text":"ст","red":false},{"text":"а","red":true},{"text":"врация, р","red":false},{"text":"е","red":true},{"text":"ст","red":false},{"text":"а","red":true},{"text":"врационный","red":false}],"section":"Р"},{"source":"реферат, реферировать","segments":[{"text":"р","red":false},{"text":"е","red":true},{"text":"ф","red":false},{"text":"е","red":true},{"text":"рат, р","red":false},{"text":"е","red":true},{"text":"ф","red":false},{"text":"е","red":true},{"text":"рировать","red":false}],"section":"Р"},{"source":"реформа, реформатор, реформировать","segments":[{"text":"р","red":false},{"text":"е","red":true},{"text":"форма, р","red":false},{"text":"е","red":true},{"text":"форматор, р","red":false},{"text":"е","red":true},{"text":"формировать","red":false}],"section":"Р"},{"source":"рецензия, рецензент, рецензировать","segments":[{"text":"р","red":false},{"text":"е","red":true},{"text":"ц","red":false},{"text":"е","red":true},{"text":"нзия, р","red":false},{"text":"е","red":true},{"text":"ц","red":false},{"text":"е","red":true},{"text":"нзент, р","red":false},{"text":"е","red":true},{"text":"ц","red":false},{"text":"е","red":true},{"text":"нзировать","red":false}],"section":"Р"},{"source":"риторика, риторический","segments":[{"text":"р","red":false},{"text":"и","red":true},{"text":"торика, р","red":false},{"text":"и","red":true},{"text":"торический","red":false}],"section":"Р"},{"source":"ровесники","segments":[{"text":"р","red":false},{"text":"о","red":true},{"text":"весники","red":false}],"section":"Р"},{"source":"романтичный, романтический, романтизм","segments":[{"text":"р","red":false},{"text":"о","red":true},{"text":"м","red":false},{"text":"а","red":true},{"text":"нтичный, р","red":false},{"text":"о","red":true},{"text":"м","red":false},{"text":"а","red":true},{"text":"нтический, р","red":false},{"text":"о","red":true},{"text":"м","red":false},{"text":"а","red":true},{"text":"нтизм","red":false}],"section":"Р"},{"source":"салют, салютовать","segments":[{"text":"с","red":false},{"text":"а","red":true},{"text":"лют, с","red":false},{"text":"а","red":true},{"text":"лютовать","red":false}],"section":"С"},{"source":"сатира, сатирический","segments":[{"text":"с","red":false},{"text":"а","red":true},{"text":"тира, с","red":false},{"text":"а","red":true},{"text":"тирический","red":false}],"section":"С"},{"source":"сварливый","segments":[{"text":"св","red":false},{"text":"а","red":true},{"text":"рливый","red":false}],"section":"С"},{"source":"свидетель","segments":[{"text":"св","red":false},{"text":"и","red":true},{"text":"детель","red":false}],"section":"С"},{"source":"сезон, сезонный","segments":[{"text":"с","red":false},{"text":"е","red":true},{"text":"зон, с","red":false},{"text":"е","red":true},{"text":"зонный","red":false}],"section":"С"},{"source":"симпатия, симпатичный","segments":[{"text":"с","red":false},{"text":"и","red":true},{"text":"мпатия, с","red":false},{"text":"и","red":true},{"text":"мпатичный","red":false}],"section":"С"},{"source":"симптом","segments":[{"text":"с","red":false},{"text":"и","red":true},{"text":"мптом","red":false}],"section":"С"},{"source":"симфония, симфонический","segments":[{"text":"с","red":false},{"text":"и","red":true},{"text":"мфония, с","red":false},{"text":"и","red":true},{"text":"мфонический","red":false}],"section":"С"},{"source":"синхронный","segments":[{"text":"с","red":false},{"text":"и","red":true},{"text":"нхронный","red":false}],"section":"С"},{"source":"сирень, сиреневый","segments":[{"text":"с","red":false},{"text":"и","red":true},{"text":"рень, с","red":false},{"text":"и","red":true},{"text":"реневый","red":false}],"section":"С"},{"source":"система, систематичный, систематизировать","segments":[{"text":"с","red":false},{"text":"и","red":true},{"text":"стема, с","red":false},{"text":"и","red":true},{"text":"ст","red":false},{"text":"е","red":true},{"text":"матичный, с","red":false},{"text":"и","red":true},{"text":"ст","red":false},{"text":"е","red":true},{"text":"матизировать","red":false}],"section":"С"},{"source":"смятение","segments":[{"text":"см","red":false},{"text":"я","red":true},{"text":"тение","red":false}],"section":"С"},{"source":"снарядить, снаряжение","segments":[{"text":"сн","red":false},{"text":"а","red":true},{"text":"рядить, сн","red":false},{"text":"а","red":true},{"text":"ряжение","red":false}],"section":"С"},{"source":"сокровенный","segments":[{"text":"с","red":false},{"text":"о","red":true},{"text":"кр","red":false},{"text":"о","red":true},{"text":"венный","red":false}],"section":"С"},{"source":"сонет","segments":[{"text":"с","red":false},{"text":"о","red":true},{"text":"нет","red":false}],"section":"С"},{"source":"сострадать, сострадание","segments":[{"text":"с","red":false},{"text":"о","red":true},{"text":"стр","red":false},{"text":"а","red":true},{"text":"дать, с","red":false},{"text":"о","red":true},{"text":"стр","red":false},{"text":"а","red":true},{"text":"дание","red":false}],"section":"С"},{"source":"состязаться, состязание","segments":[{"text":"с","red":false},{"text":"о","red":true},{"text":"ст","red":false},{"text":"я","red":true},{"text":"заться, с","red":false},{"text":"о","red":true},{"text":"ст","red":false},{"text":"я","red":true},{"text":"зание","red":false}],"section":"С"},{"source":"социальный","segments":[{"text":"с","red":false},{"text":"о","red":true},{"text":"ц","red":false},{"text":"и","red":true},{"text":"альный","red":false}],"section":"С"},{"source":"спартакиада","segments":[{"text":"сп","red":false},{"text":"а","red":true},{"text":"рт","red":false},{"text":"а","red":true},{"text":"киада","red":false}],"section":"С"},{"source":"спокойный","segments":[{"text":"сп","red":false},{"text":"о","red":true},{"text":"койный","red":false}],"section":"С"},{"source":"стадион","segments":[{"text":"ст","red":false},{"text":"а","red":true},{"text":"дион","red":false}],"section":"С"},{"source":"стипендия","segments":[{"text":"ст","red":false},{"text":"и","red":true},{"text":"пендия","red":false}],"section":"С"},{"source":"страховать, страховка","segments":[{"text":"стр","red":false},{"text":"а","red":true},{"text":"ховать, стр","red":false},{"text":"а","red":true},{"text":"ховка","red":false}],"section":"С"},{"source":"стремиться, стремление","segments":[{"text":"стр","red":false},{"text":"е","red":true},{"text":"миться, стр","red":false},{"text":"е","red":true},{"text":"мление","red":false}],"section":"С"},{"source":"суверенитет, суверенный","segments":[{"text":"с","red":false},{"text":"у","red":true},{"text":"в","red":false},{"text":"е","red":true},{"text":"р","red":false},{"text":"е","red":true},{"text":"нитет, с","red":false},{"text":"у","red":true},{"text":"в","red":false},{"text":"е","red":true},{"text":"ренный","red":false}],"section":"С"},{"source":"сувенир","segments":[{"text":"с","red":false},{"text":"у","red":true},{"text":"в","red":false},{"text":"е","red":true},{"text":"нир","red":false}],"section":"С"},{"source":"талант, талантливый","segments":[{"text":"т","red":false},{"text":"а","red":true},{"text":"лант, т","red":false},{"text":"а","red":true},{"text":"лантливый","red":false}],"section":"Т"},{"source":"теория, теоретический","segments":[{"text":"т","red":false},{"text":"ео","red":true},{"text":"рия, т","red":false},{"text":"ео","red":true},{"text":"ретический","red":false}],"section":"Т"},{"source":"территория, территориальный","segments":[{"text":"т","red":false},{"text":"е","red":true},{"text":"рр","red":false},{"text":"и","red":true},{"text":"тория, т","red":false},{"text":"е","red":true},{"text":"рр","red":false},{"text":"и","red":true},{"text":"ториальный","red":false}],"section":"Т"},{"source":"торжество, торжественный","segments":[{"text":"т","red":false},{"text":"о","red":true},{"text":"рж","red":false},{"text":"е","red":true},{"text":"ство, т","red":false},{"text":"о","red":true},{"text":"рж","red":false},{"text":"е","red":true},{"text":"ственный","red":false}],"section":"Т"},{"source":"традиция, традиционный","segments":[{"text":"тр","red":false},{"text":"а","red":true},{"text":"диция, тр","red":false},{"text":"а","red":true},{"text":"диционный","red":false}],"section":"Т"},{"source":"трафарет, трафаретный","segments":[{"text":"тр","red":false},{"text":"а","red":true},{"text":"ф","red":false},{"text":"а","red":true},{"text":"рет, тр","red":false},{"text":"а","red":true},{"text":"ф","red":false},{"text":"а","red":true},{"text":"ретный","red":false}],"section":"Т"},{"source":"тревога, тревожный, тревожить","segments":[{"text":"тр","red":false},{"text":"е","red":true},{"text":"вога, тр","red":false},{"text":"е","red":true},{"text":"вожный, тр","red":false},{"text":"е","red":true},{"text":"вожить","red":false}],"section":"Т"},{"source":"трамвай, трамвайный","segments":[{"text":"тр","red":false},{"text":"а","red":true},{"text":"мвай, тр","red":false},{"text":"а","red":true},{"text":"мвайный","red":false}],"section":"Т"},{"source":"троллейбус, троллейбусный","segments":[{"text":"тр","red":false},{"text":"о","red":true},{"text":"ллейбус, тр","red":false},{"text":"о","red":true},{"text":"ллейбусный","red":false}],"section":"Т"},{"source":"тростник, тростниковый","segments":[{"text":"тр","red":false},{"text":"о","red":true},{"text":"стник, тр","red":false},{"text":"о","red":true},{"text":"стниковый","red":false}],"section":"Т"},{"source":"тротуар","segments":[{"text":"тр","red":false},{"text":"о","red":true},{"text":"туар","red":false}],"section":"Т"},{"source":"университет, университетский","segments":[{"text":"у","red":true},{"text":"н","red":false},{"text":"и","red":true},{"text":"в","red":false},{"text":"е","red":true},{"text":"рситет, ","red":false},{"text":"у","red":true},{"text":"н","red":false},{"text":"и","red":true},{"text":"в","red":false},{"text":"е","red":true},{"text":"рситетский","red":false}],"section":"У"},{"source":"уникальный","segments":[{"text":"у","red":true},{"text":"н","red":false},{"text":"и","red":true},{"text":"кальный","red":false}],"section":"У"},{"source":"уничтожить","segments":[{"text":"у","red":true},{"text":"н","red":false},{"text":"и","red":true},{"text":"чтожить","red":false}],"section":"У"},{"source":"утрамбовать","segments":[{"text":"у","red":true},{"text":"тр","red":false},{"text":"а","red":true},{"text":"мбовать","red":false}],"section":"У"},{"source":"фантастика, фантастический","segments":[{"text":"ф","red":false},{"text":"а","red":true},{"text":"нтастика, ф","red":false},{"text":"а","red":true},{"text":"нтастический","red":false}],"section":"Ф"},{"source":"фестиваль","segments":[{"text":"ф","red":false},{"text":"е","red":true},{"text":"стиваль","red":false}],"section":"Ф"},{"source":"фигура, фигурировать, фигурист(ка), фигурный","segments":[{"text":"ф","red":false},{"text":"и","red":true},{"text":"гура, ф","red":false},{"text":"и","red":true},{"text":"гурировать, ф","red":false},{"text":"и","red":true},{"text":"гурист(ка), ф","red":false},{"text":"и","red":true},{"text":"гурный","red":false}],"section":"Ф"},{"source":"финансы, финансовый","segments":[{"text":"ф","red":false},{"text":"и","red":true},{"text":"нансы, ф","red":false},{"text":"и","red":true},{"text":"нансовый","red":false}],"section":"Ф"},{"source":"фиолетовый","segments":[{"text":"ф","red":false},{"text":"ио","red":true},{"text":"летовый","red":false}],"section":"Ф"},{"source":"фрагмент, фрагментарный","segments":[{"text":"фр","red":false},{"text":"а","red":true},{"text":"гмент, фр","red":false},{"text":"а","red":true},{"text":"гм","red":false},{"text":"е","red":true},{"text":"нтарный","red":false}],"section":"Ф"},{"source":"фразеология, фразеологический","segments":[{"text":"фр","red":false},{"text":"а","red":true},{"text":"з","red":false},{"text":"ео","red":true},{"text":"логия, фр","red":false},{"text":"а","red":true},{"text":"з","red":false},{"text":"ео","red":true},{"text":"логический","red":false}],"section":"Ф"},{"source":"хаос, хаотичный","segments":[{"text":"х","red":false},{"text":"а","red":true},{"text":"ос, х","red":false},{"text":"ао","red":true},{"text":"тичный","red":false}],"section":"Х"},{"source":"характер, характерный, характеризовать","segments":[{"text":"х","red":false},{"text":"а","red":true},{"text":"рактер, х","red":false},{"text":"а","red":true},{"text":"рактерный, х","red":false},{"text":"а","red":true},{"text":"р","red":false},{"text":"а","red":true},{"text":"ктеризовать","red":false}],"section":"Х"},{"source":"цемент, цементный","segments":[{"text":"ц","red":false},{"text":"е","red":true},{"text":"мент, ц","red":false},{"text":"е","red":true},{"text":"ментный","red":false}],"section":"Ц"},{"source":"цивилизация, цивилизационный, цивилизованный","segments":[{"text":"ц","red":false},{"text":"и","red":true},{"text":"в","red":false},{"text":"и","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"зация, ц","red":false},{"text":"и","red":true},{"text":"в","red":false},{"text":"и","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"зационный, ц","red":false},{"text":"и","red":true},{"text":"в","red":false},{"text":"и","red":true},{"text":"л","red":false},{"text":"и","red":true},{"text":"зованный","red":false}],"section":"Ц"},{"source":"циклон","segments":[{"text":"ц","red":false},{"text":"и","red":true},{"text":"клон","red":false}],"section":"Ц"},{"source":"цилиндр, цилиндрический","segments":[{"text":"ц","red":false},{"text":"и","red":true},{"text":"линдр, ц","red":false},{"text":"и","red":true},{"text":"линдрический","red":false}],"section":"Ц"},{"source":"цистерна","segments":[{"text":"ц","red":false},{"text":"и","red":true},{"text":"стерна","red":false}],"section":"Ц"},{"source":"цитата, цитировать","segments":[{"text":"ц","red":false},{"text":"и","red":true},{"text":"тата, ц","red":false},{"text":"и","red":true},{"text":"тировать","red":false}],"section":"Ц"},{"source":"человек, человеческий","segments":[{"text":"ч","red":false},{"text":"е","red":true},{"text":"ловек, ч","red":false},{"text":"е","red":true},{"text":"ловеческий","red":false}],"section":"Ч"},{"source":"чемпион, чемпионат, чемпионский","segments":[{"text":"ч","red":false},{"text":"е","red":true},{"text":"мпион, ч","red":false},{"text":"е","red":true},{"text":"мпионат, ч","red":false},{"text":"е","red":true},{"text":"мпионский","red":false}],"section":"Ч"},{"source":"шеренга","segments":[{"text":"ш","red":false},{"text":"е","red":true},{"text":"ренга","red":false}],"section":"Ш"},{"source":"шоколад, шоколадный","segments":[{"text":"ш","red":false},{"text":"о","red":true},{"text":"колад, ш","red":false},{"text":"о","red":true},{"text":"коладный","red":false}],"section":"Ш"},{"source":"шоссе, шоссейный","segments":[{"text":"ш","red":false},{"text":"о","red":true},{"text":"ссе, ш","red":false},{"text":"о","red":true},{"text":"ссейный","red":false}],"section":"Ш"},{"source":"шофёр, шофёрский","segments":[{"text":"ш","red":false},{"text":"о","red":true},{"text":"фёр, ш","red":false},{"text":"о","red":true},{"text":"фёрский","red":false}],"section":"Ш"},{"source":"эволюция, эволюционировать","segments":[{"text":"эв","red":false},{"text":"о","red":true},{"text":"люция, эв","red":false},{"text":"о","red":true},{"text":"л","red":false},{"text":"ю","red":true},{"text":"ционировать","red":false}],"section":"Э"},{"source":"экономика, экономический, экономичный","segments":[{"text":"эк","red":false},{"text":"о","red":true},{"text":"номика, эк","red":false},{"text":"о","red":true},{"text":"номический, эк","red":false},{"text":"о","red":true},{"text":"номичный","red":false}],"section":"Э"},{"source":"эксперимент, экспериментальный, экспериментировать","segments":[{"text":"эксп","red":false},{"text":"е","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"мент, эксп","red":false},{"text":"е","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"ментальный, эксп","red":false},{"text":"е","red":true},{"text":"р","red":false},{"text":"и","red":true},{"text":"ментировать","red":false}],"section":"Э"},{"source":"экспонат","segments":[{"text":"эксп","red":false},{"text":"о","red":true},{"text":"нат","red":false}],"section":"Э"},{"source":"экстремальный","segments":[{"text":"экстр","red":false},{"text":"е","red":true},{"text":"мальный","red":false}],"section":"Э"},{"source":"электроника, электрический, электричество","segments":[{"text":"эл","red":false},{"text":"е","red":true},{"text":"ктроника, эл","red":false},{"text":"е","red":true},{"text":"ктрический, эл","red":false},{"text":"е","red":true},{"text":"ктричество","red":false}],"section":"Э"},{"source":"энциклопедия, энциклопедист, энциклопедический","segments":[{"text":"энц","red":false},{"text":"и","red":true},{"text":"кл","red":false},{"text":"о","red":true},{"text":"педия, энц","red":false},{"text":"и","red":true},{"text":"кл","red":false},{"text":"о","red":true},{"text":"педист, энц","red":false},{"text":"и","red":true},{"text":"кл","red":false},{"text":"о","red":true},{"text":"педический","red":false}],"section":"Э"},{"source":"эстакада (мост)","segments":[{"text":"эст","red":false},{"text":"а","red":true},{"text":"када (мост)","red":false}],"section":"Э"}];
+
+function parseVocabCard(c){
+  const chars=[];
+  outer: for(const seg of c.segments){
+    for(const ch of seg.text){
+      if(ch===',') break outer;
+      chars.push({ch,red:!!seg.red});
+    }
+  }
+  const segments=[];
+  for(const x of chars){
+    const last=segments[segments.length-1];
+    if(last && last.red===x.red) last.text+=x.ch;
+    else segments.push({text:x.ch,red:x.red});
+  }
+  return {source:chars.map(x=>x.ch).join(''),segments,section:c.section};
+}
+
+const vocabApp = {
+  storage: 'alenchik_vocab_progress_v5',
+  words: vocabData.map(parseVocabCard).filter(c=>c.source),
+  cards: [],
+  state: {},
+  queue: [],
+  pos: 0,
+  checked: false,
+  mistakeMode: false,
+  
+  init() {
+    for(const word of this.words){
+      let targetIndex=0;
+      for(const seg of word.segments){
+        if(!seg.red) continue;
+        for(const ch of seg.text){
+          if(VOWELS.includes(ch)){
+            this.cards.push({word, targetIndex});
+            targetIndex++;
+          }
+        }
+      }
+    }
+    
+    let saved={};
+    try{ saved=JSON.parse(localStorage.getItem(this.storage)||'{}'); }catch(e){}
+    this.state = {
+      mastered: new Set(saved.mastered||[]),
+      mistakes: saved.mistakes||{},
+      mode: 'random',
+      order: saved.order||null
+    };
+    
+    this.buildQueue('random');
+    
+    document.getElementById('vocab-alphaBtn').onclick=()=>{this.buildQueue('alpha'); this.render();};
+    document.getElementById('vocab-randomBtn').onclick=()=>{this.buildQueue('random'); this.render();};
+    document.getElementById('vocab-listBtn').onclick=()=>{ this.openList() };
+    document.getElementById('vocab-mistakesBtn').onclick=()=>{ this.startMistakes() };
+    document.getElementById('vocab-checkBtn').onclick=()=>{ this.check() };
+    document.getElementById('vocab-showBtn').onclick=()=>{ this.showAnswer() };
+    document.getElementById('vocab-nextBtn').onclick=()=>{ this.next() };
+    document.getElementById('vocab-resetBtn').onclick=()=>{
+      if(confirm('Сбросить весь прогресс по словарным словам?')){
+        this.state.mastered.clear(); this.state.mistakes={}; this.save(); this.buildQueue(this.state.mode); this.render();
+      }
+    };
+  },
+  
+  key(c) { return c.word.source+'::'+c.targetIndex; },
+  wordKey(w) { return w.source; },
+  
+  save() {
+    localStorage.setItem(this.storage,JSON.stringify({
+      mastered:[...this.state.mastered], mistakes:this.state.mistakes, mode:this.state.mode,
+      order:this.queue.map(c=>this.key(c))
+    }));
+  },
+  
+  buildQueue(mode) {
+    this.mistakeMode = false;
+    this.state.mode = mode;
+    this.queue = mode==='random' ? shuffle(this.cards) : [...this.cards].sort((a,b)=>a.word.source.localeCompare(b.word.source,'ru') || a.targetIndex-b.targetIndex);
+    this.pos = 0;
+    this.save();
+  },
+  
+  targetAnswer(c) {
+    let n=0;
+    for(const seg of c.word.segments) if(seg.red) for(const ch of seg.text) if(VOWELS.includes(ch)){
+      if(n===c.targetIndex)return ch;
+      n++;
+    }
+    return '';
+  },
+  
+  renderCardHTML(c) {
+    const segs=c.word.segments;
+    let redIndex=0,out='';
+    for(const seg of segs){
+      if(!seg.red){out+=escapeHtml(seg.text);continue;}
+      for(const ch of seg.text){
+        if(VOWELS.includes(ch)){
+          const isTarget=redIndex===c.targetIndex;
+          if(isTarget){
+            out+=`<span class="blank"><input maxlength="1" inputmode="text" autocomplete="off" data-answer="${escapeAttr(ch)}"></span>`;
+          }else{
+            out+=`<span class="other-vowel">${escapeHtml(ch)}</span>`;
+          }
+          redIndex++;
+        }else out+=escapeHtml(ch);
+      }
+    }
+    return out;
+  },
+  
+  render() {
+    const c=this.queue[this.pos];
+    if(!c) return;
+    document.getElementById('vocab-section').textContent=c.word.section;
+    document.getElementById('vocab-counter').textContent=`${this.pos+1} / ${this.queue.length}`;
+    document.getElementById('vocab-words').innerHTML=this.renderCardHTML(c);
+    document.getElementById('vocab-feedback').textContent='';
+    document.getElementById('vocab-feedback').className='feedback';
+    document.getElementById('vocab-reveal').textContent='';
+    this.checked=false;
+    
+    document.getElementById('vocab-checkBtn').style.display='inline-block';
+    document.getElementById('vocab-showBtn').style.display='inline-block';
+    document.getElementById('vocab-nextBtn').style.display='none';
+    
+    setTimeout(()=>document.querySelector('#tab-vocab .blank input')?.focus(),30);
+    this.updateStats();
+    this.save();
+  },
+  
+  updateStats() {
+    document.getElementById('vocab-total').textContent=this.cards.length;
+    document.getElementById('vocab-mastered').textContent=this.state.mastered.size;
+    document.getElementById('vocab-mistakes').textContent=Object.values(this.state.mistakes).filter(v=>v>0).length;
+    document.getElementById('vocab-bar').style.width=Math.min(100,this.state.mastered.size/this.cards.length*100)+'%';
+    document.getElementById('vocab-alphaBtn').classList.toggle('active',this.state.mode==='alpha'&&!this.mistakeMode);
+    document.getElementById('vocab-randomBtn').classList.toggle('active',this.state.mode==='random'&&!this.mistakeMode);
+  },
+  
+  check() {
+    if(this.checked) return;
+    const c=this.queue[this.pos];
+    const input=document.querySelector('#tab-vocab .blank input');
+    if(!input.value.trim()) return;
+    
+    const val=input.value.trim().toLowerCase();
+    const ans=this.targetAnswer(c).toLowerCase();
+    input.classList.remove('correct','wrong');
+    const all=val===ans;
+    if(all) input.classList.add('correct'); else input.classList.add('wrong');
+    
+    const fb=document.getElementById('vocab-feedback');
+    if(all){
+      this.state.mastered.add(this.key(c));
+      delete this.state.mistakes[this.key(c)];
+      fb.textContent='✓ Правильно! Буква выучена.';
+      fb.className='feedback ok';
+    }else{
+      this.state.mistakes[this.key(c)]=(this.state.mistakes[this.key(c)]||0)+1;
+      this.state.mastered.delete(this.key(c));
+      fb.textContent='Есть ошибка. Попробуй ещё раз или посмотри ответ.';
+      fb.className='feedback bad';
+    }
+    document.getElementById('vocab-reveal').textContent=`Ответ: ${c.word.source} · нужная буква: ${this.targetAnswer(c)}`;
+    
+    if(all) {
+      this.finalizeCheck();
+    } else {
+       // let them try again or click show answer
+    }
+    this.save(); this.updateStats();
+  },
+  
+  showAnswer() {
+    if(this.checked) return;
+    const c=this.queue[this.pos];
+    const input=document.querySelector('#tab-vocab .blank input');
+    input.value=this.targetAnswer(c); input.classList.remove('wrong'); input.classList.add('correct');
+    document.getElementById('vocab-reveal').textContent=`Ответ: ${c.word.source} · нужная буква: ${this.targetAnswer(c)}`;
+    
+    this.state.mistakes[this.key(c)]=(this.state.mistakes[this.key(c)]||0)+1;
+    this.state.mastered.delete(this.key(c));
+    this.finalizeCheck();
+    this.save(); this.updateStats();
+  },
+  
+  finalizeCheck() {
+    this.checked=true;
+    document.getElementById('vocab-checkBtn').style.display='none';
+    document.getElementById('vocab-showBtn').style.display='none';
+    document.getElementById('vocab-nextBtn').style.display='inline-block';
+    document.getElementById('vocab-nextBtn').focus();
+  },
+  
+  next() {
+    if(this.pos<this.queue.length-1){this.pos++;this.render();}
+    else{this.pos=0;this.render();}
+  },
+  
+  startMistakes() {
+    const bad=this.cards.filter(c=>(this.state.mistakes[this.key(c)]||0)>0);
+    if(!bad.length){alert('Ошибок пока нет — нечего повторять 🎉');return}
+    this.queue=this.state.mode==='random'?shuffle(bad):[...bad].sort((a,b)=>a.word.source.localeCompare(b.word.source,'ru'));
+    this.pos=0; this.mistakeMode=true; this.render(); this.updateStats();
+  },
+  
+  openList() {
+    document.getElementById('modal-title').textContent = 'Словарные слова (' + this.words.length + ' слов)';
+    this.renderList('');
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('search').value='';
+    setTimeout(()=>document.getElementById('search').focus(),30);
+  },
+  
+  wordProgress(w) {
+    const total=this.cards.filter(c=>this.wordKey(c.word)===this.wordKey(w)).length;
+    const done=this.cards.filter(c=>this.wordKey(c.word)===this.wordKey(w)&&this.state.mastered.has(this.key(c))).length;
+    const bad=this.cards.some(c=>this.wordKey(c.word)===this.wordKey(w)&&this.state.mistakes[this.key(c)]);
+    return {total,done,bad};
+  },
+  
+  renderList(q) {
+    const query=q.trim().toLocaleLowerCase('ru');
+    const arr=this.words.filter(w=>w.source.toLocaleLowerCase('ru').includes(query));
+    document.getElementById('modal-list').innerHTML=arr.map((w)=>{
+      const idx=this.words.indexOf(w)+1;
+      const p=this.wordProgress(w);
+      const mark=p.done===p.total?'✓ выучено':(p.bad?`ошибки · ${p.done}/${p.total}`:`${p.done}/${p.total}`);
+      let disp = '';
+      for(const seg of w.segments){
+       if(!seg.red){disp+=escapeHtml(seg.text);continue;}
+       for(const ch of seg.text){
+         if(VOWELS.includes(ch)) disp+=`<span class="missing">${escapeHtml(ch)}</span>`;
+         else disp+=escapeHtml(ch);
+       }
+      }
+      return `<button class="list-item" data-key="${escapeAttr(this.wordKey(w))}"><span class="num">${idx}</span><span class="w">${disp}</span><span class="mark" style="color: ${p.done===p.total ? 'var(--green)' : (p.bad?'var(--red)':'var(--lav)')}">${mark}</span></button>`;
+    }).join('') || '<div style="padding:25px;text-align:center;color:#999">Ничего не найдено</div>';
+    
+    document.querySelectorAll('#modal-list .list-item').forEach(b=>b.onclick=()=>{
+      const wk=b.dataset.key;
+      const idx=this.queue.findIndex(c=>this.wordKey(c.word)===wk);
+      if(idx>=0){this.pos=idx;this.mistakeMode=false;this.render();}
+      else{
+        this.buildQueue(this.state.mode);
+        this.pos=this.queue.findIndex(c=>this.wordKey(c.word)===wk);
+        this.render();
+      }
+      document.getElementById('overlay').classList.remove('show');
+    });
+  },
+  
+  handleEnter(e) {
+    if(this.checked) this.next();
+    else this.check();
+  }
+};
+
+
+// ==========================================
+// STRESS APP LOGIC
+// ==========================================
+const stressRawData = [
+  { section: "Имена существительные", words: ["аэропОрты", "бАнты", "бОроду", "бородА", "бухгАлтеров", "вероисповЕдание", "водопровОд", "газопровОд", "граждАнство", "дефИс", "дешевИзна", "диспансЕр", "договорЁнность", "докумЕнт", "досУг", "еретИк", "жалюзИ", "знАчимость", "Иксы", "каталОг", "квартАл", "киломЕтр", "кОнусов", "корЫсть", "крАны", "кремЕнь", "кремнЯ", "лЕкторов", "лОктя", "локтЕй", "лыжнЯ", "мЕстностей", "намЕрение", "нЕдруг", "недУг", "некролОг", "нЕнависть", "нефтепровОд", "новостЕй", "нОгтя", "ногтЕй", "Отзыв (о книге)", "отзЫв (посла из страны)", "Отрочество", "партЕр", "портфЕль", "придАное", "призЫв", "свЁкла", "сирОты", "созЫв", "сосредотОчение", "срЕдства", "стАтуя", "столЯр", "тамОжня", "тОрты", "тУфля", "цемЕнт", "цЕнтнер", "цепОчка", "шАрфы", "шофЁр", "экспЕрт"] },
+  { section: "Имена прилагательные", words: ["вернА", "знАчимый", "красИвее", "красИвейший", "кУхонный", "ловкА", "мозаИчный", "оптОвый", "прозорлИвый", "прозорлИва", "слИвовый"] },
+  { section: "Глаголы", words: ["бралА", "бралАсь", "взялА", "взялАсь", "влилАсь", "ворвалАсь", "воспринЯть", "воспринялА", "воссоздалА", "вручИт", "гналА", "гналАсь", "добралА", "добралАсь", "дождалАсь", "дозвонИтся", "дозИровать", "ждалА", "закУпорить", "занЯть", "зАнял", "занялА", "зАняли", "заперлА", "запломбировАть", "защемИт", "звалА", "звонИт", "кАшлянуть", "клАла", "клЕить", "крАлась", "кровоточИть", "лгалА", "лилА", "лилАсь", "наделИт", "надорвалАсь", "назвалАсь", "накренИтся", "налилА", "нарвалА", "начАть", "нАчал", "началА", "нАчали", "обзвонИт", "облегчИть", "облегчИт", "облилАсь", "обнялАсь", "обогналА", "ободралА", "ободрИть", "ободрИт", "ободрИться", "обострИть", "одолжИть", "одолжИт", "озлОбить", "оклЕить", "окружИт", "опОшлить", "освЕдомиться", "освЕдомится", "отбылА", "отдалА", "откУпорить", "отозвалА", "отозвалАсь", "перезвонИт", "перелилА", "плодоносИть", "пломбировАть", "повторИт", "позвалА", "позвонИт", "полилА", "положИть", "положИл", "понЯть", "понялА", "послАла", "прибЫть", "прИбыл", "прибылА", "прИбыли", "принЯть", "прИнял", "принялА", "прИняли", "рвалА", "сверлИт", "снялА", "создалА", "сорвалА", "убралА", "углубИть", "укрепИт", "чЕрпать", "щемИт", "щЁлкать"] },
+  { section: "Причастия и отглаг. прилаг.", words: ["довезЁнный", "зАгнутый", "зАнятый", "занятА", "зАпертый", "заселЁнный", "заселенА", "кровоточАщий", "нажИвший", "налИвший", "нанЯвшийся", "начАвший", "нАчатый", "низведЁнный", "облегчЁнный", "ободрЁнный", "обострЁнный", "отключЁнный", "повторЁнный", "поделЁнный", "понЯвший", "прИнятый", "принятА", "приручЁнный", "прожИвший", "снятА", "сОгнутый", "углублЁнный"] },
+  { section: "Деепричастия", words: ["закУпорив", "начАв", "начАвшись", "отдАв", "понЯв", "прибЫв", "создАв"] },
+  { section: "Наречия", words: ["вОвремя", "дОверху", "дОнизу", "дОсуха", "зАсветло", "красИвее", "надОлго", "ненадОлго"] }
+];
+
+const stressApp = {
+  storage: 'alenchik_stress_progress_v5',
+  cards: [],
+  state: {},
+  queue: [],
+  pos: 0,
+  checked: false,
+  mistakeMode: false,
+  
+  init() {
+    stressRawData.forEach(group => {
+      group.words.forEach(rawStr => {
+        let wordPart = rawStr;
+        let context = '';
+        if (rawStr.includes('(')) {
+          const split = rawStr.split('(');
+          wordPart = split[0].trim();
+          context = '(' + split[1];
+        }
+        let stressedIdx = -1;
+        for (let i = 0; i < wordPart.length; i++) {
+          const ch = wordPart[i];
+          if (ch === 'Ё' || ch === 'ё' || (ch === ch.toUpperCase() && VOWELS.includes(ch))) {
+            stressedIdx = i;
+            break;
+          }
+        }
+        this.cards.push({
+          id: rawStr,
+          word: wordPart.toLowerCase(),
+          original: wordPart,
+          context: context,
+          stressedIdx: stressedIdx,
+          section: group.section
+        });
+      });
+    });
+    
+    let saved={};
+    try { saved = JSON.parse(localStorage.getItem(this.storage) || '{}'); } catch(e) {}
+    this.state = {
+      mastered: new Set(saved.mastered || []),
+      mistakes: saved.mistakes || {},
+      mode: 'random',
+      order: saved.order || null
+    };
+    
+    this.buildQueue('random');
+    
+    document.getElementById('stress-alphaBtn').onclick=()=>{this.buildQueue('alpha'); this.render();};
+    document.getElementById('stress-randomBtn').onclick=()=>{this.buildQueue('random'); this.render();};
+    document.getElementById('stress-listBtn').onclick=()=>{ this.openList() };
+    document.getElementById('stress-mistakesBtn').onclick=()=>{ this.startMistakes() };
+    document.getElementById('stress-showBtn').onclick=()=>{ this.showAnswer() };
+    document.getElementById('stress-nextBtn').onclick=()=>{ this.next() };
+    document.getElementById('stress-resetBtn').onclick=()=>{
+      if(confirm('Сбросить весь прогресс по ударениям?')){
+        this.state.mastered.clear(); this.state.mistakes={}; this.save(); this.buildQueue(this.state.mode); this.render();
+      }
+    };
+  },
+  
+  save() {
+    localStorage.setItem(this.storage, JSON.stringify({
+      mastered: [...this.state.mastered], mistakes: this.state.mistakes, mode: this.state.mode,
+      order: this.queue.map(c => c.id)
+    }));
+  },
+  
+  buildQueue(mode) {
+    this.mistakeMode = false;
+    this.state.mode = mode;
+    this.queue = mode === 'random' ? shuffle(this.cards) : [...this.cards].sort((a,b) => a.word.localeCompare(b.word, 'ru'));
+    this.pos = 0;
+    this.save();
+  },
+  
+  renderCardHTML(c) {
+    let html = `<div class="stress-word">`;
+    for(let i = 0; i < c.word.length; i++) {
+      const ch = c.word[i];
+      if (VOWELS.includes(ch)) {
+        html += `<button class="vowel-btn" data-idx="${i}">${escapeHtml(ch)}</button>`;
+      } else {
+        html += `<span>${escapeHtml(ch)}</span>`;
+      }
+    }
+    if (c.context) html += `<span class="context">${escapeHtml(c.context)}</span>`;
+    html += `</div>`;
+    return html;
+  },
+  
+  render() {
+    const c = this.queue[this.pos];
+    if(!c) return;
+    document.getElementById('stress-section').textContent = c.section;
+    document.getElementById('stress-counter').textContent = `${this.pos+1} / ${this.queue.length}`;
+    document.getElementById('stress-wordContainer').innerHTML = this.renderCardHTML(c);
+    document.getElementById('stress-feedback').textContent = '';
+    document.getElementById('stress-feedback').className = 'feedback';
+    
+    this.checked = false;
+    document.getElementById('stress-showBtn').style.display = 'inline-block';
+    document.getElementById('stress-nextBtn').style.display = 'none';
+    
+    document.querySelectorAll('#tab-stress .vowel-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => this.handleVowelClick(e));
+    });
+    
+    this.updateStats();
+    this.save();
+  },
+  
+  handleVowelClick(e) {
+    if (this.checked) return;
+    const c = this.queue[this.pos];
+    const clickedIdx = parseInt(e.target.dataset.idx);
+    const isCorrect = (clickedIdx === c.stressedIdx);
+    const fb = document.getElementById('stress-feedback');
+    
+    document.querySelectorAll('#tab-stress .vowel-btn').forEach(b => b.disabled = true);
+    
+    if (isCorrect) {
+      e.target.classList.add('correct');
+      this.state.mastered.add(c.id);
+      delete this.state.mistakes[c.id];
+      fb.textContent = '✓ Правильно!';
+      fb.className = 'feedback ok';
+    } else {
+      e.target.classList.add('wrong');
+      document.querySelector(`#tab-stress .vowel-btn[data-idx="${c.stressedIdx}"]`).classList.add('correct');
+      this.state.mistakes[c.id] = (this.state.mistakes[c.id] || 0) + 1;
+      this.state.mastered.delete(c.id);
+      fb.textContent = 'Ошибка! Запомни верное ударение.';
+      fb.className = 'feedback bad';
+    }
+    this.finalizeCheck();
+  },
+  
+  showAnswer() {
+    if(this.checked) return;
+    const c = this.queue[this.pos];
+    document.querySelectorAll('#tab-stress .vowel-btn').forEach(b => b.disabled = true);
+    document.querySelector(`#tab-stress .vowel-btn[data-idx="${c.stressedIdx}"]`).classList.add('correct');
+    
+    this.state.mistakes[c.id] = (this.state.mistakes[c.id] || 0) + 1;
+    this.state.mastered.delete(c.id);
+    
+    const fb = document.getElementById('stress-feedback');
+    fb.textContent = 'Нужно выучить это слово.';
+    fb.className = 'feedback bad';
+    this.finalizeCheck();
+  },
+  
+  finalizeCheck() {
+    this.checked = true;
+    document.getElementById('stress-showBtn').style.display = 'none';
+    document.getElementById('stress-nextBtn').style.display = 'inline-block';
+    document.getElementById('stress-nextBtn').focus();
+    this.save(); this.updateStats();
+  },
+  
+  next() {
+    if(this.pos < this.queue.length - 1) { this.pos++; this.render(); }
+    else { this.pos = 0; this.render(); }
+  },
+  
+  startMistakes() {
+    const bad = this.cards.filter(c => (this.state.mistakes[c.id] || 0) > 0);
+    if(!bad.length) { alert('Ошибок пока нет — нечего повторять 🎉'); return }
+    this.queue = this.state.mode === 'random' ? shuffle(bad) : [...bad].sort((a,b) => a.word.localeCompare(b.word, 'ru'));
+    this.pos = 0; this.mistakeMode = true; this.render(); this.updateStats();
+  },
+  
+  openList() {
+    document.getElementById('modal-title').textContent = 'Ударения (' + this.cards.length + ' слов)';
+    this.renderList('');
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('search').value = '';
+    setTimeout(() => document.getElementById('search').focus(), 30);
+  },
+  
+  renderList(q) {
+    const query = q.trim().toLocaleLowerCase('ru');
+    const arr = this.cards.filter(c => c.word.includes(query) || c.original.toLowerCase().includes(query));
+    
+    document.getElementById('modal-list').innerHTML = arr.map((c, idx) => {
+      const isMastered = this.state.mastered.has(c.id);
+      const hasMistake = this.state.mistakes[c.id] > 0;
+      const mark = isMastered ? '✓ выучено' : (hasMistake ? 'ошибки' : '');
+      
+      let html = '';
+      for(let i=0; i<c.word.length; i++) {
+        if (i === c.stressedIdx) html += `<span class="stressed-cap">${c.original[i]}</span>`;
+        else html += escapeHtml(c.word[i]);
+      }
+      if (c.context) html += `<span style="color:#999; font-size: 0.85em; margin-left: 5px;">${escapeHtml(c.context)}</span>`;
+      
+      return `<button class="list-item" data-id="${escapeHtml(c.id)}">
+        <span class="num">${idx + 1}</span>
+        <span class="w">${html}</span>
+        <span class="mark" style="color: ${isMastered ? 'var(--green)' : 'var(--red)'}">${mark}</span>
+      </button>`;
+    }).join('') || '<div style="padding:25px;text-align:center;color:#999">Ничего не найдено</div>';
+    
+    document.querySelectorAll('#modal-list .list-item').forEach(b => b.onclick = () => {
+      const id = b.dataset.id;
+      const idx = this.queue.findIndex(c => c.id === id);
+      if(idx >= 0) { this.pos = idx; this.mistakeMode = false; this.render(); }
+      else {
+        this.buildQueue(this.state.mode);
+        this.pos = this.queue.findIndex(c => c.id === id);
+        this.render();
+      }
+      document.getElementById('overlay').classList.remove('show');
+    });
+  },
+  
+  updateStats() {
+    document.getElementById('stress-total').textContent = this.cards.length;
+    document.getElementById('stress-mastered').textContent = this.state.mastered.size;
+    document.getElementById('stress-mistakes').textContent = Object.values(this.state.mistakes).filter(v => v > 0).length;
+    document.getElementById('stress-bar').style.width = Math.min(100, this.state.mastered.size / this.cards.length * 100) + '%';
+    document.getElementById('stress-alphaBtn').classList.toggle('active', this.state.mode === 'alpha' && !this.mistakeMode);
+    document.getElementById('stress-randomBtn').classList.toggle('active', this.state.mode === 'random' && !this.mistakeMode);
+  },
+  
+  handleEnter(e) {
+    if(this.checked) { e.preventDefault(); this.next(); }
+  }
+};
+
+
+// ==========================================
+// ADVERBS APP LOGIC
+// ==========================================
+const adverbsRawData = [
+  // Слитно (обычные)
+  { display: "(в)близи", answer: "слитно", resolved: "вблизи" },
+  { display: "(в)бок", answer: "слитно", resolved: "вбок" },
+  { display: "(в)брод", answer: "слитно", resolved: "вброд" },
+  { display: "(в)верх", answer: "слитно", resolved: "вверх" },
+  { display: "(в)глубь", answer: "слитно", resolved: "вглубь" },
+  { display: "(в)далеке", answer: "слитно", resolved: "вдалеке" },
+  { display: "(в)двое", answer: "слитно", resolved: "вдвое" },
+  { display: "(в)двоём", answer: "слитно", resolved: "вдвоём" },
+  { display: "(в)заперти", answer: "слитно", resolved: "взаперти" },
+  { display: "(в)конец", answer: "слитно", resolved: "вконец" },
+  { display: "(в)лево", answer: "слитно", resolved: "влево" },
+  { display: "(в)месте", answer: "слитно", resolved: "вместе" },
+  { display: "(в)миг", answer: "слитно", resolved: "вмиг" },
+  { display: "(в)низ", answer: "слитно", resolved: "вниз" },
+  { display: "(в)низу", answer: "слитно", resolved: "внизу" },
+  { display: "(в)ничью", answer: "слитно", resolved: "вничью" },
+  { display: "(в)нутри", answer: "слитно", resolved: "внутри" },
+  { display: "(в)нутрь", answer: "слитно", resolved: "внутрь" },
+  { display: "(во)время", answer: "слитно", resolved: "вовремя" },
+  { display: "(во)всю", answer: "слитно", resolved: "вовсю" },
+  { display: "(во)едино", answer: "слитно", resolved: "воедино" },
+  { display: "(во)круг", answer: "слитно", resolved: "вокруг" },
+  { display: "(во)обще", answer: "слитно", resolved: "вообще" },
+  { display: "(в)первые", answer: "слитно", resolved: "впервые" },
+  { display: "(в)переди", answer: "слитно", resolved: "впереди" },
+  { display: "(в)перемешку", answer: "слитно", resolved: "вперемешку" },
+  { display: "(в)перёд", answer: "слитно", resolved: "вперёд" },
+  { display: "(в)плотную", answer: "слитно", resolved: "вплотную" },
+  { display: "(в)полголоса", answer: "слитно", resolved: "вполголоса" },
+  { display: "(в)полоборота", answer: "слитно", resolved: "вполоборота" },
+  { display: "(в)полсилы", answer: "слитно", resolved: "вполсилы" },
+  { display: "(в)последствии", answer: "слитно", resolved: "впоследствии" },
+  { display: "(в)потьмах", answer: "слитно", resolved: "впотьмах" },
+  { display: "(в)правду", answer: "слитно", resolved: "вправду" },
+  { display: "(в)праве", answer: "слитно", resolved: "вправе" },
+  { display: "(в)право", answer: "слитно", resolved: "вправо" },
+  { display: "(в)прочем", answer: "слитно", resolved: "впрочем" },
+  { display: "(в)рассыпную", answer: "слитно", resolved: "врассыпную" },
+  { display: "(в)растяжку", answer: "слитно", resolved: "врастяжку" },
+  { display: "(в)серьёз", answer: "слитно", resolved: "всерьёз" },
+  { display: "(в)сецело", answer: "слитно", resolved: "всецело" },
+  { display: "(в)скользь", answer: "слитно", resolved: "вскользь" },
+  { display: "(в)скоре", answer: "слитно", resolved: "вскоре" },
+  { display: "(в)след", answer: "слитно", resolved: "вслед" },
+  { display: "(в)сплошную", answer: "слитно", resolved: "всплошную" },
+  { display: "(в)трое", answer: "слитно", resolved: "втрое" },
+  { display: "(в)троём", answer: "слитно", resolved: "втроём" },
+  { display: "(до)бела", answer: "слитно", resolved: "добела" },
+  { display: "(до)верху", answer: "слитно", resolved: "доверху" },
+  { display: "(до)нельзя", answer: "слитно", resolved: "донельзя" },
+  { display: "(до)суха", answer: "слитно", resolved: "досуха" },
+  { display: "(до)сыта", answer: "слитно", resolved: "досыта" },
+  { display: "(до)чиста", answer: "слитно", resolved: "дочиста" },
+  { display: "(за)муж", answer: "слитно", resolved: "замуж" },
+  { display: "(за)частую", answer: "слитно", resolved: "зачастую" },
+  { display: "(за)чем", answer: "слитно", resolved: "зачем" },
+  { display: "(из)давна", answer: "слитно", resolved: "издавна" },
+  { display: "(из)далека", answer: "слитно", resolved: "издалека" },
+  { display: "(из)нутри", answer: "слитно", resolved: "изнутри" },
+  { display: "(и)так", answer: "слитно", resolved: "итак" },
+  { display: "(к)верху", answer: "слитно", resolved: "кверху" },
+  { display: "(к)ряду", answer: "слитно", resolved: "кряду" },
+  { display: "(к)стати", answer: "слитно", resolved: "кстати" },
+  { display: "(на)бок", answer: "слитно", resolved: "набок" },
+  { display: "(на)век", answer: "слитно", resolved: "навек" },
+  { display: "(на)верху", answer: "слитно", resolved: "наверху" },
+  { display: "(на)взничь", answer: "слитно", resolved: "навзничь" },
+  { display: "(на)всегда", answer: "слитно", resolved: "навсегда" },
+  { display: "(на)встречу", answer: "слитно", resolved: "навстречу" },
+  { display: "(на)двое", answer: "слитно", resolved: "надвое" },
+  { display: "(на)едине", answer: "слитно", resolved: "наедине" },
+  { display: "(на)завтра", answer: "слитно", resolved: "назавтра" },
+  { display: "(на)зад", answer: "слитно", resolved: "назад" },
+  { display: "(на)зло", answer: "слитно", resolved: "назло" },
+  { display: "(на)зубок", answer: "слитно", resolved: "назубок" },
+  { display: "(на)изусть", answer: "слитно", resolved: "наизусть" },
+  { display: "(на)кануне", answer: "слитно", resolved: "накануне" },
+  { display: "(на)конец", answer: "слитно", resolved: "наконец" },
+  { display: "(на)лево", answer: "слитно", resolved: "налево" },
+  { display: "(на)оборот", answer: "слитно", resolved: "наоборот" },
+  { display: "(на)перегонки", answer: "слитно", resolved: "наперегонки" },
+  { display: "(на)перекор", answer: "слитно", resolved: "наперекор" },
+  { display: "(на)перёд", answer: "слитно", resolved: "наперёд" },
+  { display: "(на)показ", answer: "слитно", resolved: "напоказ" },
+  { display: "(на)половину", answer: "слитно", resolved: "наполовину" },
+  { display: "(на)право", answer: "слитно", resolved: "направо" },
+  { display: "(на)против", answer: "слитно", resolved: "напротив" },
+  { display: "(на)равне", answer: "слитно", resolved: "наравне" },
+  { display: "(на)распашку", answer: "слитно", resolved: "нараспашку" },
+  { display: "(на)ружу", answer: "слитно", resolved: "наружу" },
+  { display: "(на)сквозь", answer: "слитно", resolved: "насквозь" },
+  { display: "(на)сколько", answer: "слитно", resolved: "насколько" },
+  { display: "(на)смерть", answer: "слитно", resolved: "насмерть" },
+  { display: "(на)спех", answer: "слитно", resolved: "наспех" },
+  { display: "(на)стежь", answer: "слитно", resolved: "настежь" },
+  { display: "(на)столько", answer: "слитно", resolved: "настолько" },
+  { display: "(на)трое", answer: "слитно", resolved: "натрое" },
+  { display: "(на)угад", answer: "слитно", resolved: "наугад" },
+  { display: "(на)утёк", answer: "слитно", resolved: "наутёк" },
+  { display: "(на)утро", answer: "слитно", resolved: "наутро" },
+  { display: "(от)куда", answer: "слитно", resolved: "откуда" },
+  { display: "(от)сюда", answer: "слитно", resolved: "отсюда" },
+  { display: "(от)того", answer: "слитно", resolved: "оттого" },
+  { display: "(от)туда", answer: "слитно", resolved: "оттуда" },
+  { display: "(от)части", answer: "слитно", resolved: "отчасти" },
+  { display: "(от)чего", answer: "слитно", resolved: "отчего" },
+  { display: "(по)ближе", answer: "слитно", resolved: "поближе" },
+  { display: "(по)больше", answer: "слитно", resolved: "побольше" },
+  { display: "(по)быстрее", answer: "слитно", resolved: "побыстрее" },
+  { display: "(по)верху", answer: "слитно", resolved: "поверху" },
+  { display: "(по)всюду", answer: "слитно", resolved: "повсюду" },
+  { display: "(по)зади", answer: "слитно", resolved: "позади" },
+  { display: "(по)истине", answer: "слитно", resolved: "поистине" },
+  { display: "(по)меньше", answer: "слитно", resolved: "поменьше" },
+  { display: "(по)мимо", answer: "слитно", resolved: "помимо" },
+  { display: "(по)началу", answer: "слитно", resolved: "поначалу" },
+  { display: "(по)неволе", answer: "слитно", resolved: "поневоле" },
+  { display: "(по)немногу", answer: "слитно", resolved: "понемногу" },
+  { display: "(по)одиночке", answer: "слитно", resolved: "поодиночке" },
+  { display: "(по)ровну", answer: "слитно", resolved: "поровну" },
+  { display: "(по)просту", answer: "слитно", resolved: "попросту" },
+  { display: "(по)скольку", answer: "слитно", resolved: "поскольку" },
+  { display: "(по)скорее", answer: "слитно", resolved: "поскорее" },
+  { display: "(по)среди", answer: "слитно", resolved: "посреди" },
+  { display: "(по)средине", answer: "слитно", resolved: "посредине" },
+  { display: "(по)тому", answer: "слитно", resolved: "потому" },
+  { display: "(по)очерёдно", answer: "слитно", resolved: "поочерёдно" },
+  { display: "(по)чему", answer: "слитно", resolved: "почему" },
+  { display: "(по)этому", answer: "слитно", resolved: "поэтому" },
+  { display: "(с)боку", answer: "слитно", resolved: "сбоку" },
+  { display: "(с)верху", answer: "слитно", resolved: "сверху" },
+  { display: "(сей)час", answer: "слитно", resolved: "сейчас" },
+  { display: "(с)зади", answer: "слитно", resolved: "сзади" },
+  { display: "(с)лева", answer: "слитно", resolved: "слева" },
+  { display: "(с)наружи", answer: "слитно", resolved: "снаружи" },
+  { display: "(с)начала", answer: "слитно", resolved: "сначала" },
+  { display: "(с)низу", answer: "слитно", resolved: "снизу" },
+  { display: "(с)нова", answer: "слитно", resolved: "снова" },
+  { display: "(со)всем", answer: "слитно", resolved: "совсем" },
+  { display: "(с)разу", answer: "слитно", resolved: "сразу" },
+  { display: "(с)плеча", answer: "слитно", resolved: "сплеча" },
+  { display: "(с)права", answer: "слитно", resolved: "справа" },
+  { display: "(тот)час", answer: "слитно", resolved: "тотчас" },
+
+  // Раздельно (обычные)
+  { display: "(без) оглядки", answer: "раздельно", resolved: "без оглядки" },
+  { display: "(без) разбору", answer: "раздельно", resolved: "без разбору" },
+  { display: "(без) спросу", answer: "раздельно", resolved: "без спросу" },
+  { display: "(без) толку", answer: "раздельно", resolved: "без толку" },
+  { display: "(без) умолку", answer: "раздельно", resolved: "без умолку" },
+  { display: "бок (о) бок", answer: "раздельно", resolved: "бок о бок" },
+  { display: "(в) виде", answer: "раздельно", resolved: "в виде" },
+  { display: "(в) глаза", answer: "раздельно", resolved: "в глаза" },
+  { display: "(в) заключение", answer: "раздельно", resolved: "в заключение" },
+  { display: "(в) конце концов", answer: "раздельно", resolved: "в конце концов" },
+  { display: "(вне) зависимости", answer: "раздельно", resolved: "вне зависимости" },
+  { display: "(в) обнимку", answer: "раздельно", resolved: "в обнимку" },
+  { display: "(в) обтяжку", answer: "раздельно", resolved: "в обтяжку" },
+  { display: "(в) общем", answer: "раздельно", resolved: "в общем" },
+  { display: "(во) власти", answer: "раздельно", resolved: "во власти" },
+  { display: "(в) одиночку", answer: "раздельно", resolved: "в одиночку" },
+  { display: "(во) избежание", answer: "раздельно", resolved: "во избежание" },
+  { display: "(в) открытую", answer: "раздельно", resolved: "в открытую" },
+  { display: "(в) потемках", answer: "раздельно", resolved: "в потемках" },
+  { display: "(в) розницу", answer: "раздельно", resolved: "в розницу" },
+  { display: "(в) сердцах", answer: "раздельно", resolved: "в сердцах" },
+  { display: "(всё) равно", answer: "раздельно", resolved: "всё равно" },
+  { display: "(в) ходу", answer: "раздельно", resolved: "в ходу" },
+  { display: "(в) упор", answer: "раздельно", resolved: "в упор" },
+  { display: "(в) целом", answer: "раздельно", resolved: "в целом" },
+  { display: "(до) сих пор", answer: "раздельно", resolved: "до сих пор" },
+  { display: "друг (друга)", answer: "раздельно", resolved: "друг друга" },
+  { display: "(до) завтра", answer: "раздельно", resolved: "до завтра" },
+  { display: "(до) конца", answer: "раздельно", resolved: "до конца" },
+  { display: "(за) глаза", answer: "раздельно", resolved: "за глаза" },
+  { display: "(за) границей", answer: "раздельно", resolved: "за границей" },
+  { display: "(за) границу", answer: "раздельно", resolved: "за границу" },
+  { display: "(как) будто", answer: "раздельно", resolved: "как будто" },
+  { display: "(как) раз", answer: "раздельно", resolved: "как раз" },
+  { display: "(как) только", answer: "раздельно", resolved: "как только" },
+  { display: "(к) вечеру", answer: "раздельно", resolved: "к вечеру" },
+  { display: "(к) утру", answer: "раздельно", resolved: "к утру" },
+  { display: "(на) бегу", answer: "раздельно", resolved: "на бегу" },
+  { display: "(на) вид", answer: "раздельно", resolved: "на вид" },
+  { display: "(на) виду", answer: "раздельно", resolved: "на виду" },
+  { display: "(на) глаз", answer: "раздельно", resolved: "на глаз" },
+  { display: "(на) глазок", answer: "раздельно", resolved: "на глазок" },
+  { display: "(на) днях", answer: "раздельно", resolved: "на днях" },
+  { display: "(на) лету", answer: "раздельно", resolved: "на лету" },
+  { display: "(на) миг", answer: "раздельно", resolved: "на миг" },
+  { display: "(на) ощупь", answer: "раздельно", resolved: "на ощупь" },
+  { display: "(на) радостях", answer: "раздельно", resolved: "на радостях" },
+  { display: "(на) редкость", answer: "раздельно", resolved: "на редкость" },
+  { display: "(на) совесть", answer: "раздельно", resolved: "на совесть" },
+  { display: "(на) убыль", answer: "раздельно", resolved: "на убыль" },
+  { display: "(на) ходу", answer: "раздельно", resolved: "на ходу" },
+  { display: "(по) временам", answer: "раздельно", resolved: "по временам" },
+  { display: "(по) двое", answer: "раздельно", resolved: "по двое" },
+  { display: "(по) крайней мере", answer: "раздельно", resolved: "по крайней мере" },
+  { display: "(по) мере", answer: "раздельно", resolved: "по мере" },
+  { display: "(по) одному", answer: "раздельно", resolved: "по одному" },
+  { display: "(по) очереди", answer: "раздельно", resolved: "по очереди" },
+  { display: "(по) памяти", answer: "раздельно", resolved: "по памяти" },
+  { display: "(по) праву", answer: "раздельно", resolved: "по праву" },
+  { display: "(по) совести", answer: "раздельно", resolved: "по совести" },
+  { display: "(по) ходу", answer: "раздельно", resolved: "по ходу" },
+  { display: "(по) трое", answer: "раздельно", resolved: "по трое" },
+  { display: "(про) себя", answer: "раздельно", resolved: "про себя" },
+  { display: "(с) виду", answer: "раздельно", resolved: "с виду" },
+  { display: "след (в) след", answer: "раздельно", resolved: "след в след" },
+  { display: "(со) временем", answer: "раздельно", resolved: "со временем" },
+  { display: "(с) полуслова", answer: "раздельно", resolved: "с полуслова" },
+  { display: "(с) разбегу", answer: "раздельно", resolved: "с разбегу" },
+  { display: "(с) размаху", answer: "раздельно", resolved: "с размаху" },
+  { display: "(с) ходу", answer: "раздельно", resolved: "с ходу" },
+
+  // Парные случаи (с контекстом)
+  { display: "уехать (на)совсем", context: "отвечает на вопрос «как?»", answer: "слитно", resolved: "уехать насовсем" },
+  { display: "сослался (на)совсем старые данные", context: "предлог НА + наречие", answer: "раздельно", resolved: "сослался на совсем старые данные" },
+  { display: "поговорить (на)прямую", context: "наречие", answer: "слитно", resolved: "поговорить напрямую" },
+  { display: "выйти (на)прямую дорогу", context: "предлог НА + прилагательное", answer: "раздельно", resolved: "выйти на прямую дорогу" },
+  { display: "действовать (за)одно", context: "наречие", answer: "слитно", resolved: "действовать заодно" },
+  { display: "посчитать два посещения (за)одно", context: "предлог ЗА + числительное", answer: "раздельно", resolved: "посчитать два посещения за одно" },
+  { display: "удивился, (за)тем рассмеялся", context: "наречие (значение «потом»)", answer: "слитно", resolved: "удивился, затем рассмеялся" },
+  { display: "(за)тем домом уже поля", context: "предлог ЗА + местоимение", answer: "раздельно", resolved: "за тем домом уже поля" },
+  { display: "(в)начале всем было интересно", context: "наречие", answer: "слитно", resolved: "вначале всем было интересно" },
+  { display: "(в)начале пути все оживлённо шутили", context: "предлог В + сущ. с зависимым словом", answer: "раздельно", resolved: "в начале пути все оживлённо шутили" },
+  { display: "посмотреть (на)верх", context: "наречие", answer: "слитно", resolved: "посмотреть наверх" },
+  { display: "с обрыва (на)верх повозки посыпались камни", context: "предлог НА + сущ. с зависимым словом", answer: "раздельно", resolved: "с обрыва на верх повозки посыпались камни" },
+  { display: "(в)дали виден лес", context: "наречие", answer: "слитно", resolved: "вдали виден лес" },
+  { display: "(в)дали, скрытой туманом", context: "предлог В + сущ. с зависимым словом", answer: "раздельно", resolved: "в дали, скрытой туманом" },
+  { display: "глядеть (в)даль", context: "наречие", answer: "слитно", resolved: "глядеть вдаль" },
+  { display: "всматриваться (в)даль степей", context: "предлог В + сущ. с зависимым словом", answer: "раздельно", resolved: "всматриваться в даль степей" },
+  { display: "распространяться (в)глубь", context: "наречие", answer: "слитно", resolved: "распространяться вглубь" },
+  { display: "вникать (в)глубь проблемы", context: "предлог В + сущ. с зависимым словом", answer: "раздельно", resolved: "вникать в глубь проблемы" },
+  { display: "сделать (в)тайне", context: "наречие", answer: "слитно", resolved: "сделать втайне" },
+  { display: "сохранить (в)тайне", context: "предлог В + сущ.", answer: "раздельно", resolved: "сохранить в тайне" }
+];
+
+const adverbsApp = {
+  storage: 'alenchik_adverbs_progress_v5',
+  cards: adverbsRawData.map((c, i) => ({ ...c, id: i.toString() })),
+  state: {},
+  queue: [],
+  pos: 0,
+  checked: false,
+  mistakeMode: false,
+  
+  init() {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(this.storage) || '{}'); } catch(e) {}
+    this.state = {
+      mastered: new Set(saved.mastered || []),
+      mistakes: saved.mistakes || {},
+      mode: 'random',
+      order: saved.order || null
+    };
+    
+    this.buildQueue('random');
+    
+    document.getElementById('adverbs-alphaBtn').onclick=()=>{this.buildQueue('alpha'); this.render();};
+    document.getElementById('adverbs-randomBtn').onclick=()=>{this.buildQueue('random'); this.render();};
+    document.getElementById('adverbs-listBtn').onclick=()=>{ this.openList() };
+    document.getElementById('adverbs-mistakesBtn').onclick=()=>{ this.startMistakes() };
+    document.getElementById('adverbs-showBtn').onclick=()=>{ this.showAnswer() };
+    document.getElementById('adverbs-nextBtn').onclick=()=>{ this.next() };
+    document.getElementById('adverbs-resetBtn').onclick=()=>{
+      if(confirm('Сбросить весь прогресс по наречиям?')){
+        this.state.mastered.clear(); this.state.mistakes={}; this.save(); this.buildQueue(this.state.mode); this.render();
+      }
+    };
+    
+    document.querySelectorAll('#tab-adverbs .option-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => this.handleOptionClick(e));
+    });
+  },
+  
+  save() {
+    localStorage.setItem(this.storage, JSON.stringify({
+      mastered: [...this.state.mastered], mistakes: this.state.mistakes, mode: this.state.mode,
+      order: this.queue.map(c => c.id)
+    }));
+  },
+  
+  buildQueue(mode) {
+    this.mistakeMode = false;
+    this.state.mode = mode;
+    this.queue = mode === 'random' ? shuffle(this.cards) : [...this.cards].sort((a,b) => a.display.replace(/[()]/g, '').localeCompare(b.display.replace(/[()]/g, ''), 'ru'));
+    this.pos = 0;
+    this.save();
+  },
+  
+  formatDisplayWord(text) {
+    return escapeHtml(text).replace(/\((.*?)\)/g, '<span class="brackets">($1)</span>');
+  },
+  
+  render() {
+    const c = this.queue[this.pos];
+    if(!c) return;
+    document.getElementById('adverbs-counter').textContent = `${this.pos+1} / ${this.queue.length}`;
+    
+    const wordEl = document.getElementById('adverbs-wordContainer');
+    wordEl.innerHTML = this.formatDisplayWord(c.display);
+    wordEl.className = 'task-word'; 
+    
+    document.getElementById('adverbs-contextContainer').textContent = '';
+    document.getElementById('adverbs-feedback').textContent = '';
+    document.getElementById('adverbs-feedback').className = 'feedback';
+    
+    this.checked = false;
+    
+    document.querySelectorAll('#tab-adverbs .option-btn').forEach(btn => {
+      btn.disabled = false;
+      btn.className = 'option-btn';
+    });
+    
+    document.getElementById('adverbs-optionsContainer').style.display = 'flex';
+    document.getElementById('adverbs-showBtn').style.display = 'inline-block';
+    document.getElementById('adverbs-nextBtn').style.display = 'none';
+    
+    this.updateStats();
+    this.save();
+  },
+  
+  handleOptionClick(e) {
+    if (this.checked) return;
+    const c = this.queue[this.pos];
+    const selectedAns = e.target.dataset.ans;
+    const isCorrect = (selectedAns === c.answer);
+    const fb = document.getElementById('adverbs-feedback');
+    
+    document.querySelectorAll('#tab-adverbs .option-btn').forEach(b => b.disabled = true);
+    
+    if (isCorrect) {
+      e.target.classList.add('correct');
+      this.state.mastered.add(c.id);
+      delete this.state.mistakes[c.id];
+      fb.textContent = '✓ Правильно!';
+      fb.className = 'feedback ok';
+    } else {
+      e.target.classList.add('wrong');
+      document.querySelector(`#tab-adverbs .option-btn[data-ans="${c.answer}"]`).classList.add('correct');
+      this.state.mistakes[c.id] = (this.state.mistakes[c.id] || 0) + 1;
+      this.state.mastered.delete(c.id);
+      fb.textContent = 'Ошибка! Запомни верное написание.';
+      fb.className = 'feedback bad';
+      if (c.context) document.getElementById('adverbs-contextContainer').textContent = c.context;
+    }
+    
+    this.revealAnswer(c);
+    this.finalizeCheck();
+  },
+  
+  showAnswer() {
+    if(this.checked) return;
+    const c = this.queue[this.pos];
+    document.querySelectorAll('#tab-adverbs .option-btn').forEach(b => b.disabled = true);
+    document.querySelector(`#tab-adverbs .option-btn[data-ans="${c.answer}"]`).classList.add('correct');
+    
+    this.state.mistakes[c.id] = (this.state.mistakes[c.id] || 0) + 1;
+    this.state.mastered.delete(c.id);
+    
+    const fb = document.getElementById('adverbs-feedback');
+    fb.textContent = 'Ответ показан. Постарайся запомнить.';
+    fb.className = 'feedback bad';
+    if (c.context) document.getElementById('adverbs-contextContainer').textContent = c.context;
+    
+    this.revealAnswer(c);
+    this.finalizeCheck();
+  },
+  
+  revealAnswer(c) {
+    const wordEl = document.getElementById('adverbs-wordContainer');
+    wordEl.innerHTML = escapeHtml(c.resolved);
+    wordEl.classList.add('revealed');
+  },
+  
+  finalizeCheck() {
+    this.checked = true;
+    document.getElementById('adverbs-showBtn').style.display = 'none';
+    document.getElementById('adverbs-nextBtn').style.display = 'inline-block';
+    document.getElementById('adverbs-nextBtn').focus();
+    this.save(); this.updateStats();
+  },
+  
+  next() {
+    if(this.pos < this.queue.length - 1) { this.pos++; this.render(); }
+    else { this.pos = 0; this.render(); }
+  },
+  
+  startMistakes() {
+    const bad = this.cards.filter(c => (this.state.mistakes[c.id] || 0) > 0);
+    if(!bad.length) { alert('Ошибок пока нет — нечего повторять 🎉'); return }
+    this.queue = this.state.mode === 'random' ? shuffle(bad) : [...bad].sort((a,b) => a.display.replace(/[()]/g, '').localeCompare(b.display.replace(/[()]/g, ''), 'ru'));
+    this.pos = 0; this.mistakeMode = true; this.render(); this.updateStats();
+  },
+  
+  openList() {
+    document.getElementById('modal-title').textContent = 'Наречия (' + this.cards.length + ' слов)';
+    this.renderList('');
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('search').value = '';
+    setTimeout(() => document.getElementById('search').focus(), 30);
+  },
+  
+  renderList(q) {
+    const query = q.trim().toLocaleLowerCase('ru');
+    const arr = this.cards.filter(c => c.display.toLowerCase().includes(query) || c.resolved.toLowerCase().includes(query));
+    
+    document.getElementById('modal-list').innerHTML = arr.map((c, idx) => {
+      const isMastered = this.state.mastered.has(c.id);
+      const hasMistake = this.state.mistakes[c.id] > 0;
+      const mark = isMastered ? '✓ выучено' : (hasMistake ? 'ошибки' : '');
+      const contextHtml = c.context ? `<span style="color:#999; font-size: 0.85em; margin-left: 5px;">${escapeHtml(c.context)}</span>` : '';
+      return `<button class="list-item" data-id="${escapeHtml(c.id)}">
+        <span class="num">${idx + 1}</span>
+        <span class="w">${this.formatDisplayWord(c.display)}</span>
+        <span class="mark" style="color: ${isMastered ? 'var(--green)' : 'var(--red)'}">${mark}</span>
+      </button>`;
+    }).join('') || '<div style="padding:25px;text-align:center;color:#999">Ничего не найдено</div>';
+    
+    document.querySelectorAll('#modal-list .list-item').forEach(b => b.onclick = () => {
+      const id = b.dataset.id;
+      const idx = this.queue.findIndex(c => c.id === id);
+      if(idx >= 0) { this.pos = idx; this.mistakeMode = false; this.render(); }
+      else {
+        this.buildQueue(this.state.mode);
+        this.pos = this.queue.findIndex(c => c.id === id);
+        this.render();
+      }
+      document.getElementById('overlay').classList.remove('show');
+    });
+  },
+  
+  updateStats() {
+    document.getElementById('adverbs-total').textContent = this.cards.length;
+    document.getElementById('adverbs-mastered').textContent = this.state.mastered.size;
+    document.getElementById('adverbs-mistakes').textContent = Object.values(this.state.mistakes).filter(v => v > 0).length;
+    document.getElementById('adverbs-bar').style.width = Math.min(100, this.state.mastered.size / this.cards.length * 100) + '%';
+    document.getElementById('adverbs-alphaBtn').classList.toggle('active', this.state.mode === 'alpha' && !this.mistakeMode);
+    document.getElementById('adverbs-randomBtn').classList.toggle('active', this.state.mode === 'random' && !this.mistakeMode);
+  },
+  
+  handleEnter(e) {
+    if(this.checked) { e.preventDefault(); this.next(); }
+  }
+};
+
+// Initialize all apps
+vocabApp.init();
+stressApp.init();
+adverbsApp.init();
+
+// Set initial active app
+vocabApp.render();
+</script>
+</body>
+</html>
